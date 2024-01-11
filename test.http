@@ -1,0 +1,57 @@
+POST http://localhost:8000/authentication/signup/
+Content-Type: application/json
+
+{
+  "username": "n31997",
+  "password": "ngocnam2210",
+  "email": "chris.nn2522@gmail.com",
+  "first_name": "Nam",
+  "last_name": "Ngo Ngoc"
+}
+
+###
+
+POST http://localhost:8000/authentication/login/
+Content-Type: application/json
+
+{
+  "username": "n31997",
+  "password": "ngocnam2210"
+}
+
+###
+
+GET http://localhost:8000/city/fetch/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA0OTk1NDUxLCJpYXQiOjE3MDQ5ODgyNTEsImp0aSI6Ijk3NDFhMDM1MzY3MzQ4YTQ5NDY1OGJiYjNmMzhmMzlhIiwidXNlcl9pZCI6MX0.dr2o6eEfxhEVsfaH-dfmjq3iY4KrLTzwp0vra_sk2ng
+
+###
+
+GET http://localhost:8000/game/fetch/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA0OTk1NDUxLCJpYXQiOjE3MDQ5ODgyNTEsImp0aSI6Ijk3NDFhMDM1MzY3MzQ4YTQ5NDY1OGJiYjNmMzhmMzlhIiwidXNlcl9pZCI6MX0.dr2o6eEfxhEVsfaH-dfmjq3iY4KrLTzwp0vra_sk2ng
+
+###
+GET http://localhost:8000/rate/fetch/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA0OTk1NDUxLCJpYXQiOjE3MDQ5ODgyNTEsImp0aSI6Ijk3NDFhMDM1MzY3MzQ4YTQ5NDY1OGJiYjNmMzhmMzlhIiwidXNlcl9pZCI6MX0.dr2o6eEfxhEVsfaH-dfmjq3iY4KrLTzwp0vra_sk2ng
+
+###
+
+GET http://localhost:8000/api/game/bac
+Content-Type: application/json
+
+
+###
+
+GET http://localhost:8000/api/city/nam
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/rate/
+Content-Type: application/json
+
+
+
+
