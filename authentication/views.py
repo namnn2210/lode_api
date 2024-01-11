@@ -5,12 +5,15 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login as django_login
+import json
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+    username = request.body.get('username')
+    password = request.body.get('password')
+
+    print(username,password)
 
     if not username or not password:
         return Response({'error': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -29,8 +32,10 @@ def signup(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+    body = json.loads(request.body.decode('utf-8'))
+    print(body)
+    username = body['username']
+    password = body['password']
 
     if not username or not password:
         return Response({'error': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)

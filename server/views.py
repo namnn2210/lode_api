@@ -80,7 +80,7 @@ def get_games(request, region):
             'type': game['type'],
             'name': game['name']
         }
-        sub_games = SubGameSerializer(Subgame.objects.filter(type=game['type']), many=True).data
+        sub_games = SubGameSerializer(Subgame.objects.filter(type=game['type'],region=game['region']), many=True).data
         game_obj['children'] = sub_games
         list_games.append(game_obj)
 
