@@ -44,13 +44,15 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/api/city/nam
+GET http://localhost:8000/api/city/nam`
 Content-Type: application/json
 
 ###
 
 GET http://localhost:8000/api/rate/
 Content-Type: application/json
+
+
 
 
 
