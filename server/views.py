@@ -102,6 +102,16 @@ def get_cities(request, region):
     })
 
 @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def get_all_cities(request):
+    cities = CitySerializer(City.objects.all(), many=True).data
+    return Response({
+        "success": True,
+        "rows": cities,
+        "attrs": []
+    })
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_rates(request):
     rates = RateSerializer(Rate.objects.all(), many=True).data
