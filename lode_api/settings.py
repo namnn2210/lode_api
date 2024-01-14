@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'lode_com',
         'USER': 'root',
         'PASSWORD': 'ngocnam2210',
-        'HOST': 'localhost',  # Change this if your MySQL server is on a different host
+        'HOST': '194.233.87.18',  # Change this if your MySQL server is on a different host
         'PORT': '3306',
     }
 }
