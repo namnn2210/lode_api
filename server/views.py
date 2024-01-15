@@ -71,7 +71,7 @@ def fetch_rates(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_games(request, region):
     games = GameSerializer(Game.objects.filter(region=region), many=True).data
     list_games = []
@@ -92,7 +92,7 @@ def get_games(request, region):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_cities(request, region):
     cities = CitySerializer(City.objects.filter(region=region), many=True).data
     return Response({
@@ -112,7 +112,7 @@ def get_all_cities(request):
     })
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_rates(request):
     rates = RateSerializer(Rate.objects.all(), many=True).data
     return Response({
