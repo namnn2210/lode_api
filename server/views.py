@@ -80,7 +80,7 @@ def get_games(request, region):
             'type': game['type'],
             'name': game['name']
         }
-        sub_games = SubGameSerializer(Subgame.objects.filter(type=game['type'],region=game['region']), many=True).data
+        sub_games = SubGameSerializer(Subgame.objects.filter(type=game['type'], region=game['region']), many=True).data
         game_obj['children'] = sub_games
         list_games.append(game_obj)
 
@@ -101,15 +101,20 @@ def get_cities(request, region):
         "attrs": []
     })
 
+
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
-def get_all_cities(request):
-    cities = CitySerializer(City.objects.all(), many=True).data
+def get_all_cities(request, region=None):
+    if region:
+        cities = CitySerializer(City.objects.filter(region=region), many=True).data
+    else:
+        cities = CitySerializer(City.objects.all(), many=True).data
     return Response({
         "success": True,
         "rows": cities,
         "attrs": []
     })
+
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
