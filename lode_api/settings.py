@@ -25,7 +25,7 @@ SECRET_KEY = '!@lode@@!!123'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '194.233.87.18','110lode.com','www.110lode.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '194.233.87.18','https://110lode.com/', '110lode.com', 'www.110lode.com']
 
 # Application definition
 
@@ -182,4 +182,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://194.233.87.18:8000",
     "https://110lode.com"
 ]
-CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://194.233.87.18:8000",
+    "https://110lode.com"
+]
+
+# CORS_ALLOW_ALL_ORIGINS = True
