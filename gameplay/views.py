@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_cities(request, region):
+def save_order(request, region):
     cities = CitySerializer(City.objects.filter(region=region), many=True).data
     return Response({
         "success": True,
