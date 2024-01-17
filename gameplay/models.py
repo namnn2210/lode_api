@@ -16,6 +16,8 @@ class Order(models.Model):
     win = models.BooleanField(null=False, default=False)
     result = models.TextField(null=False, default="")
     note = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'orders'

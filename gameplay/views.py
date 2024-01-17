@@ -6,8 +6,9 @@ from .models import Order
 # Create your views here.
 import json
 
+
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def save_order(request):
     body = json.loads(request.body.decode('utf-8'))
     order = Order(**body)

@@ -190,4 +190,4 @@ CSRF_TRUSTED_ORIGINS = [
     "https://110lode.com"
 ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
