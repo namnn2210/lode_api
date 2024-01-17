@@ -57,8 +57,9 @@ def login(request):
 
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
+    logged_account = UserSerializer(user).data
 
-    return Response({'access_token': access_token}, status=status.HTTP_200_OK)
+    return Response({'access_token': access_token,'loggedAccount':logged_account}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
