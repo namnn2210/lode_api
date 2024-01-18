@@ -25,7 +25,7 @@ SECRET_KEY = '!@lode@@!!123'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '194.233.87.18','https://110lode.com/', '110lode.com', 'www.110lode.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '194.233.87.18', 'https://110lode.com/', '110lode.com', 'www.110lode.com']
 
 # Application definition
 
@@ -133,7 +133,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 SIMPLE_JWT = {

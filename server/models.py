@@ -58,8 +58,12 @@ class Rate(models.Model):
 
 
 class Banking(models.Model):
-    bank_name = models.CharField(max_length=255)
-    bank_number = models.CharField(max_length=255)
+    bank_name = models.CharField(max_length=255, default='VIB')
+    user_name = models.CharField(max_length=255, default='DO VAN NINH')
+    bank_number = models.CharField(max_length=255, default='563633686')
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'banking'

@@ -1,10 +1,10 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import City, Game, Subgame, Rate
+from .models import City, Game, Subgame, Rate, Banking
 from datetime import date
 import requests
-from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer
+from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer
 
 
 @api_view(['GET'])
@@ -123,5 +123,15 @@ def get_rates(request):
     return Response({
         "success": True,
         "rows": rates,
+        "attrs": []
+    })
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def get_banking(request):
+    banking = BankingSerializer(Banking.objects.filter(status=True)).data
+    return Response({
+        "success": True,
+        "rows": banking,
         "attrs": []
     })
