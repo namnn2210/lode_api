@@ -12,7 +12,7 @@ import json
 
 
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def save_order(request):
     body = json.loads(request.body.decode('utf-8'))
     user = get_object_or_404(User, pk=body['user_id'])
@@ -52,20 +52,20 @@ def save_order(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_orders(request):
     if request.query_params.get('start_date'):
         start_date = datetime.strptime(request.query_params.get('start_date'),
                                        "%Y-%m-%d").date()  # Get the first parameter
     else:
-        start_date = datetime.now()
+        start_date = datetime.now().date()
     if request.query_params.get('end_date'):
         end_date = datetime.strptime(request.query_params.get('end_date'),
                                      "%Y-%m-%d").date()  # Get the second parameter
     else:
-        end_date = datetime.now()
+        end_date = datetime.now().date() + timedelta(days=1)
     print(start_date, end_date)
-    filtered_records = Order.objects.filter(Q(created_at__gte=start_date) & Q(created_at__lte=end_date))
+    filtered_records = OrderSerializer(Order.objects.filter(Q(created_at__gte=start_date) & Q(created_at__lte=end_date)), many=True).data
     return Response({
         "success": True,
         "rows": filtered_records,
