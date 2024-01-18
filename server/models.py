@@ -55,3 +55,11 @@ class Rate(models.Model):
 
     class Meta:
         db_table = 'rates'
+
+
+class Banking(models.Model):
+    bank_name = models.CharField(max_length=255)
+    bank_number = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'banking'
