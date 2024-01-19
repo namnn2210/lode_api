@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from .serializers import OrderSerializer
+from rest_framework.pagination import PageNumberPagination
 import json
 
 
@@ -34,7 +35,8 @@ def save_order(request):
         elif today_date > order_date_obj:
             order_date = today_date
 
-        order = Order(user=user, city=city, mode=mode, order_date=order_date.strftime("%Y-%m-%d"), numbers=body['numbers'],
+        order = Order(user=user, city=city, mode=mode, order_date=order_date.strftime("%Y-%m-%d"),
+                      numbers=body['numbers'],
                       pay_number=body['pay_number'], total=body['total'])
         order_dict = OrderSerializer(order).data
         order.save()
@@ -54,6 +56,8 @@ def save_order(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_orders(request):
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
     if request.query_params.get('start_date'):
         start_date = datetime.strptime(request.query_params.get('start_date'),
                                        "%Y-%m-%d").date()  # Get the first parameter
@@ -65,9 +69,11 @@ def get_orders(request):
     else:
         end_date = datetime.now().date() + timedelta(days=1)
     print(start_date, end_date)
-    filtered_records = OrderSerializer(Order.objects.filter(Q(created_at__gte=start_date) & Q(created_at__lte=end_date)), many=True).data
+    filtered_records = Order.objects.filter(Q(created_at__gte=start_date) & Q(created_at__lte=end_date))
+    result_page = paginator.paginate_queryset(filtered_records, request)
+    serialized_data = OrderSerializer(result_page, many=True).data
     return Response({
         "success": True,
-        "rows": filtered_records,
+        "rows": serialized_data,
         "attrs": []
     })
