@@ -21,3 +21,15 @@ class Order(models.Model):
 
     class Meta:
         db_table = 'orders'
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=10, null=False, unique=True)
+    balance = models.IntegerField(default=0)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'user_profile'

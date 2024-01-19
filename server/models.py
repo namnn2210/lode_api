@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 
 # Create your models here.
@@ -67,3 +69,18 @@ class Banking(models.Model):
 
     class Meta:
         db_table = 'banking'
+
+
+class BalanceTransaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    transaction_type = models.CharField(max_length=20, choices=[('Nap', 'Nạp'), ('Rut', 'Rút')])
+    description = models.CharField(max_length=100, default='', blank=True)
+    amount = models.IntegerField(default=0)
+    status = models.CharField(max_length=20,
+                              choices=[('Pending', 'Chờ xử lí'), ('Cancel', 'Hủy'), ('Approved', 'Thành công')],
+                              default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'balance_transactions'

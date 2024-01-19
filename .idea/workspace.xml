@@ -4,19 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dc2d4682-958f-4ee0-8ee6-6e53f007a5d7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/lode_api.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lode_api/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lode_api/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lode_api/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lode_api/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lode_api/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+    <list default="true" id="dc2d4682-958f-4ee0-8ee6-6e53f007a5d7" name="Changes" comment="edit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gameplay/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gameplay/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gameplay/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +29,20 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;namnn2210&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="d05cb45d-7c64-47f7-9df5-8e78bf35daaf" />
+        <option name="url" value="https://github.com/namnn2210/lode_api.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -43,31 +52,48 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "HTTP Request.test | #1.executor": "Run",
-    "HTTP Request.test | #2.executor": "Run",
-    "HTTP Request.test | #3.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;HTTP Request.test | #1.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #2.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #3.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #4.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #5.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #6.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #7.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #8.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/PycharmProjects/crypminer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\PycharmProjects\lode_api\lode_api\gameplay" />
+    </key>
+  </component>
   <component name="RunManager" selected="Django Server.lode_api">
-    <configuration name="test | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" requestIdentifier="#1" runType="Run single request">
-      <method v="2" />
-    </configuration>
     <configuration name="test | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" index="2" requestIdentifier="#2" runType="Run single request">
       <method v="2" />
     </configuration>
-    <configuration name="test | #3" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" index="3" requestIdentifier="#3" runType="Run single request">
+    <configuration name="test | #5" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" index="5" requestIdentifier="#5" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="test | #6" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" index="6" requestIdentifier="#6" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="test | #7" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" index="7" requestIdentifier="#7" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="test | #8" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/test.http" index="8" requestIdentifier="#8" runType="Run single request">
       <method v="2" />
     </configuration>
     <configuration name="lode_api" type="Python.DjangoServer" factoryName="Django server">
@@ -96,9 +122,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="HTTP Request.test | #3" />
         <item itemvalue="HTTP Request.test | #2" />
-        <item itemvalue="HTTP Request.test | #1" />
+        <item itemvalue="HTTP Request.test | #8" />
+        <item itemvalue="HTTP Request.test | #7" />
+        <item itemvalue="HTTP Request.test | #6" />
+        <item itemvalue="HTTP Request.test | #5" />
       </list>
     </recent_temporary>
   </component>
@@ -120,11 +148,162 @@
       <workItem from="1704907060569" duration="649000" />
       <workItem from="1704907763471" duration="184000" />
       <workItem from="1704908001357" duration="608000" />
-      <workItem from="1704908675979" duration="2145000" />
+      <workItem from="1704908675979" duration="2791000" />
+      <workItem from="1704982785660" duration="6000" />
+      <workItem from="1704984308779" duration="2246000" />
+      <workItem from="1704989095850" duration="5373000" />
+      <workItem from="1704994525726" duration="1738000" />
+      <workItem from="1705122268979" duration="30000" />
+      <workItem from="1705128411186" duration="4540000" />
+      <workItem from="1705158817883" duration="2528000" />
+      <workItem from="1705171602197" duration="40000" />
+      <workItem from="1705230979026" duration="1956000" />
+      <workItem from="1705248343181" duration="2576000" />
+      <workItem from="1705336347360" duration="611000" />
+      <workItem from="1705417742232" duration="2933000" />
+      <workItem from="1705501360489" duration="2803000" />
+      <workItem from="1705504245735" duration="8711000" />
+      <workItem from="1705590086262" duration="2147000" />
+      <workItem from="1705595451169" duration="52000" />
+      <workItem from="1705595529558" duration="54000" />
+      <workItem from="1705596695463" duration="1120000" />
+      <workItem from="1705597834853" duration="264000" />
+      <workItem from="1705598152362" duration="1531000" />
+      <workItem from="1705684071413" duration="2614000" />
+      <workItem from="1705686785772" duration="26000" />
+      <workItem from="1705686817519" duration="341000" />
     </task>
+    <task id="LOCAL-00001" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1704911030808</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1704911030808</updated>
+    </task>
+    <task id="LOCAL-00002" summary="add requirements.txt">
+      <option name="closed" value="true" />
+      <created>1704911060345</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1704911060345</updated>
+    </task>
+    <task id="LOCAL-00003" summary="edit">
+      <option name="closed" value="true" />
+      <created>1704993413088</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1704993413088</updated>
+    </task>
+    <task id="LOCAL-00004" summary="edit">
+      <option name="closed" value="true" />
+      <created>1704995439283</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1704995439283</updated>
+    </task>
+    <task id="LOCAL-00005" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705171624952</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1705171624952</updated>
+    </task>
+    <task id="LOCAL-00006" summary="add db file">
+      <option name="closed" value="true" />
+      <created>1705246704249</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1705246704249</updated>
+    </task>
+    <task id="LOCAL-00007" summary="add db file">
+      <option name="closed" value="true" />
+      <created>1705250705221</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1705250705221</updated>
+    </task>
+    <task id="LOCAL-00008" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705250864550</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1705250864550</updated>
+    </task>
+    <task id="LOCAL-00009" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705503977746</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1705503977746</updated>
+    </task>
+    <task id="LOCAL-00010" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705504373502</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1705504373502</updated>
+    </task>
+    <task id="LOCAL-00011" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705505433501</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1705505433501</updated>
+    </task>
+    <task id="LOCAL-00012" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705507504480</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1705507504480</updated>
+    </task>
+    <task id="LOCAL-00013" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705508339019</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1705508339020</updated>
+    </task>
+    <task id="LOCAL-00014" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705513506010</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1705513506010</updated>
+    </task>
+    <task id="LOCAL-00015" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705592203483</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1705592203483</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial commit" />
+    <MESSAGE value="add requirements.txt" />
+    <MESSAGE value="add db file" />
+    <MESSAGE value="edit" />
+    <option name="LAST_COMMIT_MESSAGE" value="edit" />
   </component>
 </project>

@@ -9,13 +9,20 @@ from django.contrib.auth import login as django_login
 import json
 import jwt
 from .serializers import UserSerializer
+from gameplay.models import UserProfile
+from gameplay.serializers import UserProfileSerializer
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
-    username = request.body.get('username')
-    password = request.body.get('password')
+    body = json.loads(request.body.decode('utf-8'))
+    first_name = body.get('first_name')
+    last_name = body.get('last_name')
+    username = body.get('username')
+    password = body.get('password')
+    email = body.get('email')
+    phone = body.get('phone')
 
     print(username, password)
 
@@ -25,7 +32,11 @@ def signup(request):
     if User.objects.filter(username=username).exists():
         return Response({'error': 'Username is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, password=password)
+    user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name,
+                                    last_name=last_name)
+    user_profile = UserProfile(user=user, phone=phone)
+    user_profile.save()
+
     django_login(request, user)
 
     refresh = RefreshToken.for_user(user)
@@ -57,9 +68,15 @@ def login(request):
 
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
-    logged_account = UserSerializer(user).data
+    # logged_account = UserSerializer(user).data
+    user_profile_serializer = UserProfileSerializer(get_object_or_404(UserProfile, user=user)).data
 
-    return Response({'access_token': access_token,'user':logged_account}, status=status.HTTP_200_OK)
+    user_serializer = UserSerializer(user).data
+    user_profile_serializer.update(user_serializer)
+
+    print(user_profile_serializer)
+
+    return Response({'access_token': access_token, 'user': user_profile_serializer}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -77,9 +94,14 @@ def account(request):
             # 'decoded_token' is now a dictionary containing the payload data
             user_id = decoded_token['user_id']
             user = get_object_or_404(User, pk=user_id)
-            logged_account = UserSerializer(user).data
+            user_profile_serializer = UserProfileSerializer(get_object_or_404(UserProfile, user=user)).data
 
-            return Response({'loggedAccount': logged_account}, status=status.HTTP_200_OK)
+            user_serializer = UserSerializer(user).data
+            user_profile_serializer.update(user_serializer)
+
+            print(user_profile_serializer)
+
+            return Response({'loggedAccount': user_profile_serializer}, status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError:
             return Response({'error': "Token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
         except jwt.DecodeError:
