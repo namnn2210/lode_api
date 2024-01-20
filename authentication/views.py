@@ -73,7 +73,7 @@ def login(request):
 
     user_serializer = UserSerializer(user).data
     user_profile_serializer.update(user_serializer)
-
+    del user_profile_serializer['password']
     print(user_profile_serializer)
 
     return Response({'access_token': access_token, 'user': user_profile_serializer}, status=status.HTTP_200_OK)
