@@ -2,9 +2,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import City, Game, Subgame, Rate, Banking
+from gameplay.models import Order, BalanceTransaction
 from datetime import date
-import requests
 from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+import requests
+import json
 
 
 @api_view(['GET'])
@@ -126,8 +130,9 @@ def get_rates(request):
         "attrs": []
     })
 
+
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_banking(request):
     banking = BankingSerializer(Banking.objects.filter(status=True)).data
     return Response({
@@ -135,3 +140,38 @@ def get_banking(request):
         "rows": banking,
         "attrs": []
     })
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def withdraw(request):
+    """
+    :body request:
+    {
+        "user_id":1
+        "amount":27000
+    }
+    :return:
+    """
+    body = json.loads(request.body.decode('utf-8'))
+    user = get_object_or_404(User, pk=body['user_id'])
+    amount = body['amount']
+    # Get all orders
+    orders = Order.objects.filter(user=user)
+    total_amount_order = 0
+    for order in orders:
+        total_amount_order += order.total
+    # Get all deposit
+    deposits = BalanceTransaction.objects.filter(user=user, transaction_type=1, status=1)
+    total_amount_deposit = 0
+    for deposit in deposits:
+        total_amount_deposit += deposit.amount
+
+    if total_amount_order < total_amount_deposit:
+        return Response({
+            "success": False,
+            "rows": {},
+            "attrs": ['Số tiền đặt cược ít hơn số tiền đã nạp vào']
+        })
+
+    withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount)

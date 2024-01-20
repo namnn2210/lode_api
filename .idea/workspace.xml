@@ -5,13 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc2d4682-958f-4ee0-8ee6-6e53f007a5d7" name="Changes" comment="edit">
+      <change afterPath="$PROJECT_DIR$/gameplay/migrations/0011_order_status_alter_order_created_at_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gameplay/migrations/0012_alter_order_created_at_alter_order_pay_number_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gameplay/migrations/0013_alter_order_created_at_alter_order_updated_at.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/migrations/0011_alter_balancetransaction_amount_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/migrations/0012_alter_balancetransaction_status.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gameplay/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gameplay/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gameplay/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gameplay/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameplay/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +175,8 @@
       <workItem from="1705598152362" duration="1531000" />
       <workItem from="1705684071413" duration="2614000" />
       <workItem from="1705686785772" duration="26000" />
-      <workItem from="1705686817519" duration="341000" />
+      <workItem from="1705686817519" duration="958000" />
+      <workItem from="1705752180190" duration="5046000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -293,7 +298,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705592203483</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="edit">
+      <option name="closed" value="true" />
+      <created>1705687452495</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1705687452495</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

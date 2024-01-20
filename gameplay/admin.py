@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile
+from .models import UserProfile, Order
 
 
 # Register your models here.
@@ -10,4 +10,13 @@ class UserProfileAdmin(admin.ModelAdmin):
     search_fields = ('phone',)
 
 
+class OrderAdmin(admin.ModelAdmin):
+    list_display = (
+    'user', 'order_date', 'city', 'mode', 'numbers', 'pay_number', 'total', 'win', 'result', 'note', 'status',
+    'created_at', 'updated_at')
+    list_filter = ('user', 'order_date', 'city', 'mode', 'win')
+    search_fields = ('user',)
+
+
 admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(Order, OrderAdmin)
