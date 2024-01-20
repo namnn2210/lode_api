@@ -10,5 +10,5 @@ urlpatterns = [
     path('api/cities/<str:region>', get_all_cities, name='get_cities_with_region'),
     path('api/rate', get_rates, name='get_rates'),
     path('api/banking', get_banking, name='get_banking'),
-    path('hooks/sepay-payment', deposit, name='deposit')
+    path('api/deposit', deposit, name='deposit')
 ]
