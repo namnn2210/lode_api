@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Order, UserProfile
-from server.models import City, Subgame
+from server.models import City, Subgame, APIResponse
 from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
@@ -23,11 +24,7 @@ class OrderView(APIView):
         user_profile = get_object_or_404(UserProfile, user=user)
 
         if body['total'] > user_profile.balance:
-            return Response({
-                "success": False,
-                "rows": {},
-                "attrs": ['Không đủ số dư trong tài khoản']
-            })
+            return Response(APIResponse(success=False, data={}, message="Không đủ số dư trong tài khoản").__dict__())
 
         time_release = city.time_release
         time_release_object = datetime.strptime(time_release, "%H:%M:%S").time()
@@ -52,17 +49,10 @@ class OrderView(APIView):
                           pay_number=body['pay_number'], total=body['total'])
             order_dict = OrderSerializer(order).data
             order.save()
-            return Response({
-                "success": True,
-                "rows": order_dict,
-                "attrs": []
-            })
+            return Response(APIResponse(success=True, data=order_dict, message="").__dict__())
         else:
-            return Response({
-                "success": False,
-                "rows": {},
-                "attrs": ['Thành phố và chế độ chơi không hợp lệ']
-            })
+            return Response(
+                APIResponse(success=False, data={}, message="Thành phố và chế độ chơi không hợp lệ").__dict__())
 
     def get(self, request):
         paginator = PageNumberPagination()
@@ -79,11 +69,8 @@ class OrderView(APIView):
             end_date = datetime.now().date() + timedelta(days=1)
         print(start_date, end_date)
         filtered_records = Order.objects.filter(
-            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city','mode')
+            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode')
         result_page = paginator.paginate_queryset(filtered_records, request)
         serialized_data = OrderSerializer(result_page, many=True).data
-        return Response({
-            "success": True,
-            "rows": serialized_data,
-            "attrs": []
-        })
+        return Response(
+            APIResponse(success=True, data=serialized_data, message="").__dict__())

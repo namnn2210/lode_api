@@ -2,9 +2,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import City, Game, Subgame, Rate, Banking
+from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
 from datetime import date
-from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, BalanceTransactionSerializer
+from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, \
+    BalanceTransactionSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 import requests
@@ -88,22 +90,14 @@ def get_games(request, region):
         game_obj['children'] = sub_games
         list_games.append(game_obj)
 
-    return Response({
-        "success": True,
-        "rows": list_games,
-        "attrs": []
-    })
+    return Response(APIResponse(success=True, data=list_games, message="").__dict__())
 
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def get_cities(request, region):
     cities = CitySerializer(City.objects.filter(region=region), many=True).data
-    return Response({
-        "success": True,
-        "rows": cities,
-        "attrs": []
-    })
+    return Response(APIResponse(success=True, data=cities, message="").__dict__())
 
 
 @api_view(['GET'])
@@ -113,34 +107,21 @@ def get_all_cities(request, region=None):
         cities = CitySerializer(City.objects.filter(region=region), many=True).data
     else:
         cities = CitySerializer(City.objects.all(), many=True).data
-    return Response({
-        "success": True,
-        "rows": cities,
-        "attrs": []
-    })
-
+    return Response(APIResponse(success=True, data=cities, message="").__dict__())
 
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def get_rates(request):
     rates = RateSerializer(Rate.objects.all(), many=True).data
-    return Response({
-        "success": True,
-        "rows": rates,
-        "attrs": []
-    })
+    return Response(APIResponse(success=True, data=rates, message="").__dict__())
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_banking(request):
     banking = BankingSerializer(Banking.objects.filter(status=True)).data
-    return Response({
-        "success": True,
-        "rows": banking,
-        "attrs": []
-    })
+    return Response(APIResponse(success=True, data=banking, message="").__dict__())
 
 
 @api_view(['POST'])
@@ -169,20 +150,12 @@ def withdraw(request):
         total_amount_deposit += deposit.amount
 
     if total_amount_order < total_amount_deposit:
-        return Response({
-            "success": False,
-            "rows": {},
-            "attrs": ['Số tiền đặt cược ít hơn số tiền đã nạp vào']
-        })
+        return Response(
+            APIResponse(success=False, data={}, message="Số tiền đặt cược ít hơn số tiền đã nạp vào").__dict__())
 
     withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount)
     withdraw.save()
 
     withdraw_serializer = BalanceTransactionSerializer(withdraw).data
 
-    return Response({
-        "success": True,
-        "rows": withdraw_serializer,
-        "attrs": []
-    })
-
+    return Response(APIResponse(success=True, data=withdraw_serializer, message="").__dict__())
