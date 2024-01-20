@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 import json
 
 
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class OrderView(APIView):
     def post(self, request):
         body = json.loads(request.body.decode('utf-8'))
@@ -69,7 +69,8 @@ class OrderView(APIView):
         else:
             end_date = datetime.now().date() + timedelta(days=1)
         print(start_date, end_date)
-        filtered_records = Order.objects.filter(Q(created_at__gte=start_date) & Q(created_at__lte=end_date))
+        filtered_records = Order.objects.filter(
+            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city','mode')
         result_page = paginator.paginate_queryset(filtered_records, request)
         serialized_data = OrderSerializer(result_page, many=True).data
         return Response({

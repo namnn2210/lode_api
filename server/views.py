@@ -120,6 +120,7 @@ def get_all_cities(request, region=None):
     })
 
 
+
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def get_rates(request):

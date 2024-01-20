@@ -25,6 +25,7 @@ class Order(models.Model):
         db_table = 'orders'
 
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10, null=False, unique=True)
