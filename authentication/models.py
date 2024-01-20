@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10, null=False, unique=True)
     balance = models.BigIntegerField(default=0)
-    code = models.CharField(max_length=15, unique=True, default='')
+    code = models.CharField(max_length=15, unique=True, null=True, blank=True)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -23,11 +23,10 @@ class UserProfile(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.code:
-            # Generate a random 10-digit string
+            prefix = "LD"
             random_digits = ''.join(random.choices(string.digits, k=10))
-
-            # Set the code with the prefix "LD" and the random digits
-            self.code = "LD" + random_digits
+            code = prefix + random_digits
+            self.code = code
         super().save(*args, **kwargs)
 
 
