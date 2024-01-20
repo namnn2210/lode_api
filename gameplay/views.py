@@ -25,13 +25,15 @@ class OrderView(APIView):
         order_date = body['order_date']
         order_date_obj = datetime.strptime(order_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
         today_date = datetime.now().date()
+        current_time = datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S").time()
 
         print(order_date_obj, today_date)
+        print(current_time, time_release_object)
 
         # Kiểm tra trò chơi có đúng vùng hay không
         if mode.region == city.region:
             # Kiểm tra thời gian đặt lệnh đã quá thời gian có kết quả chưa
-            if today_date == order_date_obj and datetime.now().time() > time_release_object:
+            if today_date == order_date_obj and current_time > time_release_object:
                 order_date_obj = today_date + timedelta(days=1)
             elif today_date > order_date_obj:
                 order_date_obj = today_date
