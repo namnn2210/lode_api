@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Order
+from .models import Order, UserProfile
 from server.models import City, Subgame
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -13,13 +13,22 @@ from rest_framework.views import APIView
 import json
 
 
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 class OrderView(APIView):
     def post(self, request):
         body = json.loads(request.body.decode('utf-8'))
         user = get_object_or_404(User, pk=body['user_id'])
         city = get_object_or_404(City, pk=body['city_id'])
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
+        user_profile = get_object_or_404(UserProfile, user=user)
+
+        if body['total'] > user_profile.balance:
+            return Response({
+                "success": False,
+                "rows": {},
+                "attrs": ['Không đủ số dư trong tài khoản']
+            })
+
         time_release = city.time_release
         time_release_object = datetime.strptime(time_release, "%H:%M:%S").time()
         order_date = body['order_date']
@@ -52,7 +61,7 @@ class OrderView(APIView):
             return Response({
                 "success": False,
                 "rows": {},
-                "attrs": ['Invalid city and game mode']
+                "attrs": ['Thành phố và chế độ chơi không hợp lệ']
             })
 
     def get(self, request):
