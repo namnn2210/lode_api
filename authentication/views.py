@@ -9,8 +9,9 @@ from django.contrib.auth import login as django_login
 import json
 import jwt
 from .serializers import UserSerializer
-from gameplay.models import UserProfile
+from authentication.models import UserProfile
 from gameplay.serializers import UserProfileSerializer
+from server.models import APIResponse
 
 
 @api_view(['POST'])

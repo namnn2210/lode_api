@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Order, UserProfile
+from .models import Order
+from authentication.models import UserProfile
 from server.serializer import CitySerializer, SubGameSerializer
 
 

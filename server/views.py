@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from authentication.models import UserProfile
 from .models import City, Game, Subgame, Rate, Banking
 from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
@@ -11,6 +12,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 import requests
 import json
+import jwt
 
 
 @api_view(['GET'])
@@ -120,8 +122,43 @@ def get_rates(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_banking(request):
-    banking = BankingSerializer(Banking.objects.filter(status=True)).data
-    return Response(APIResponse(success=True, data=banking, message="").__dict__())
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    if auth_header.startswith('Bearer '):
+        token_key = auth_header[len('Bearer '):]
+        print(token_key)
+        secret_key = '!@lode@@!!123'
+        try:
+            # Decode the JWT
+            decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
+            user_id = decoded_token['user_id']
+            user = get_object_or_404(User, pk=user_id)
+            user_profile = get_object_or_404(UserProfile, user=user)
+            content = {'content': user_profile.code}
+
+            banking = BankingSerializer(Banking.objects.filter(status=True)).data
+            banking.update(content)
+            return Response(APIResponse(success=True, data=banking, message="").__dict__())
+        except Exception as ex:
+            return Response(APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
+    else:
+        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
+
+
+@api_view(['POST'])
+def deposit(request):
+    body = json.loads(request.body.decode('utf-8'))
+    if body['transferType'] == 'in':
+        user_profile = UserProfile.objects.get(code=body['content'])
+        if user_profile:
+            deposit_transaction = BalanceTransaction(user=user_profile.user, transaction_type=1, status=1,
+                                                     amount=body['transferAmount'])
+            deposit_transaction.save()
+            deposit_transaction_serializer = BalanceTransactionSerializer(deposit_transaction).data
+            return Response(APIResponse(success=True, data=deposit_transaction_serializer, message="").__dict__())
+        else:
+            return Response(APIResponse(success=False, data={}, message="Người dùng không hợp lệ").__dict__())
+    else:
+        return Response(APIResponse(success=False, data={}, message="Giao dịch không hợp lệ").__dict__())
 
 
 @api_view(['POST'])
@@ -137,7 +174,11 @@ def withdraw(request):
     """
     body = json.loads(request.body.decode('utf-8'))
     user = get_object_or_404(User, pk=body['user_id'])
+    user_profile = get_object_or_404(UserProfile, user=user)
     amount = body['amount']
+    if amount > user_profile.balance:
+        return Response(
+            APIResponse(success=False, data={}, message="Số dư không đủ").__dict__())
     # Get all orders
     orders = Order.objects.filter(user=user)
     total_amount_order = 0
