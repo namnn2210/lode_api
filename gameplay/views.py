@@ -36,7 +36,7 @@ class OrderView(APIView):
             elif today_date > order_date_obj:
                 order_date = today_date
 
-            order = Order(user=user, city=city, mode=mode, order_date=order_date.strftime("%Y-%m-%d"),
+            order = Order(user=user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
                           numbers=body['numbers'],
                           pay_number=body['pay_number'], total=body['total'])
             order_dict = OrderSerializer(order).data
