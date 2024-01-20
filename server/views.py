@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .models import City, Game, Subgame, Rate, Banking
 from gameplay.models import Order, BalanceTransaction
 from datetime import date
-from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer
+from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, BalanceTransactionSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 import requests
@@ -175,3 +175,13 @@ def withdraw(request):
         })
 
     withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount)
+    withdraw.save()
+
+    withdraw_serializer = BalanceTransactionSerializer(withdraw).data
+
+    return Response({
+        "success": True,
+        "rows": withdraw_serializer,
+        "attrs": []
+    })
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Game, Subgame, City, Rate, Banking
+from .models import Game, Subgame, City, Rate, Banking, BalanceTransaction
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -29,4 +29,10 @@ class RateSerializer(serializers.ModelSerializer):
 class BankingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banking
+        fields = '__all__'
+
+
+class BalanceTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BalanceTransaction
         fields = '__all__'
