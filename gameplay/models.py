@@ -11,15 +11,15 @@ class Order(models.Model):
     order_date = models.TextField(null=False, default=datetime.today().date().strftime("%Y-%m-%d"))
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=False)
     mode = models.ForeignKey(Subgame, on_delete=models.CASCADE, null=False)
-    numbers = models.JSONField(null=False)
+    numbers = models.JSONField()
     pay_number = models.BigIntegerField(null=False, default=1000)
     total = models.BigIntegerField(null=False, default=1000)
     win = models.BooleanField(null=False, default=False)
     result = models.TextField(null=False, default="")
     note = models.TextField()
     status = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    updated_at = models.DateTimeField(default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'orders'
