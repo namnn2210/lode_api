@@ -32,9 +32,9 @@ class OrderView(APIView):
         if mode.region == city.region:
             # Kiểm tra thời gian đặt lệnh đã quá thời gian có kết quả chưa
             if today_date == order_date_obj and datetime.now().time() > time_release_object:
-                order_date = today_date + timedelta(days=1)
+                order_date_obj = today_date + timedelta(days=1)
             elif today_date > order_date_obj:
-                order_date = today_date
+                order_date_obj = today_date
 
             order = Order(user=user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
                           numbers=body['numbers'],
