@@ -11,7 +11,7 @@ class Order(models.Model):
     order_date = models.TextField(null=False, default=datetime.today().date().strftime("%Y-%m-%d"))
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=False)
     mode = models.ForeignKey(Subgame, on_delete=models.CASCADE, null=False)
-    numbers = models.TextField(null=False, default="")
+    numbers = models.JSONField(null=False)
     pay_number = models.BigIntegerField(null=False, default=1000)
     total = models.BigIntegerField(null=False, default=1000)
     win = models.BooleanField(null=False, default=False)
