@@ -11,6 +11,7 @@ from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateS
     BalanceTransactionSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 import requests
 import json
 import jwt
@@ -214,3 +215,29 @@ def withdraw(request):
     withdraw_serializer = BalanceTransactionSerializer(withdraw).data
 
     return Response(APIResponse(success=True, data=withdraw_serializer, message="").__dict__())
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_balance_transactions(request):
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    if auth_header.startswith('Bearer '):
+        token_key = auth_header[len('Bearer '):]
+        print(token_key)
+        secret_key = '!@lode@@!!123'
+        try:
+            # Decode the JWT
+            decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
+            user_id = decoded_token['user_id']
+            user = get_object_or_404(User, pk=user_id)
+            balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
+            result_page = paginator.paginate_queryset(balance_transactions, request)
+            serialized_data = BalanceTransactionSerializer(result_page, many=True).data
+            return Response(APIResponse(success=True, data=serialized_data, message="").__dict__())
+        except jwt.ExpiredSignatureError as ex:
+            print(str(ex))
+            return Response(APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
+    else:
+        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())

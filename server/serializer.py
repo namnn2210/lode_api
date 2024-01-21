@@ -36,7 +36,7 @@ class BankingSerializer(serializers.ModelSerializer):
 
 
 class BalanceTransactionSerializer(serializers.ModelSerializer):
-
+    bank = BankSerializer()
     class Meta:
         model = BalanceTransaction
         fields = '__all__'
