@@ -93,17 +93,12 @@ def account(request):
     auth_header = request.META.get('HTTP_AUTHORIZATION', '')
     if auth_header.startswith('Bearer '):
         token_key = auth_header[len('Bearer '):]
-        try:
-            Token(token_key)  # Initialize the token
-        except Exception:
-            return Response(APIResponse(success=False, data={}, message="Token hết hạn hoặc không hợp lệ").__dict__(),
-                            status=status.HTTP_401_UNAUTHORIZED)
-        print(token_key)
         secret_key = '!@lode@@!!123'
         try:
-            # Decode the JWT
+            print('=================================')
+            # Manually decode the token without checking for expiration
             decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
-
+            print('=================================')
             # 'decoded_token' is now a dictionary containing the payload data
             user_id = decoded_token['user_id']
             user = get_object_or_404(User, pk=user_id)
@@ -114,15 +109,11 @@ def account(request):
 
             print(user_profile_serializer)
 
-            return Response(APIResponse(success=True, data={'user': user_profile_serializer},
-                                        message="").__dict__(), status=status.HTTP_200_OK)
-        except jwt.ExpiredSignatureError:
-            return Response(APIResponse(success=False, data={}, message="Token hết hạn").__dict__(),
-                            status=status.HTTP_401_UNAUTHORIZED)
-        except jwt.DecodeError:
-            return Response(APIResponse(success=False, data={}, message="Token decoding failed").__dict__(),
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(APIResponse(success=True, data={'user': user_profile_serializer}, message="").__dict__(), status=status.HTTP_200_OK)
+        except Exception as ex:
+            return Response(APIResponse(success=False, data={}, message="Token hết hạn hoặc không hợp lệ").__dict__(), status=status.HTTP_401_UNAUTHORIZED)
     else:
         # Handle invalid or missing Authorization header
-        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
-                        status=status.HTTP_401_UNAUTHORIZED)
+        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__(), status=status.HTTP_401_UNAUTHORIZED)
+
+
