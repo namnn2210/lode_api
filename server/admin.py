@@ -5,7 +5,7 @@ from .models import Banking, BalanceTransaction
 # Register your models here.
 
 class BankingAdmin(admin.ModelAdmin):
-    list_display = ["user_name", "bank_name", "bank_number", "status", "created_at", "updated_at"]
+    list_display = ["user_name", "bank", "bank_number", "status", "created_at", "updated_at"]
 
 
 class BalanceTransactionAdmin(admin.ModelAdmin):

@@ -138,7 +138,8 @@ def get_banking(request):
             banking = BankingSerializer(Banking.objects.get(status=True)).data
             banking.update(content)
             return Response(APIResponse(success=True, data=banking, message="").__dict__())
-        except Exception as ex:
+        except jwt.ExpiredSignatureError as ex:
+            print(str(ex))
             return Response(APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
     else:
         return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())

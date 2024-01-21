@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'server',
     'authentication',
     "corsheaders",
-    'gameplay'
+    'gameplay',
+    'banks'
 ]
 
 MIDDLEWARE = [

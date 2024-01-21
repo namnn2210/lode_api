@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from banks.models import Bank
 
 
 # Create your models here.
@@ -68,7 +69,7 @@ class Rate(models.Model):
 
 
 class Banking(models.Model):
-    bank_name = models.CharField(max_length=255, default='VIB')
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE, null=True)
     user_name = models.CharField(max_length=255, default='DO VAN NINH')
     bank_number = models.CharField(max_length=255, default='563633686')
     status = models.BooleanField(default=True)
