@@ -28,10 +28,12 @@ def signup(request):
     print(username, password)
 
     if not username or not password:
-        return Response({'error': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
 
     if User.objects.filter(username=username).exists():
-        return Response({'error': 'Username is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(APIResponse(success=False, data={}, message="Tên đăng nhập đã được sử dụng").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
 
     user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name,
                                     last_name=last_name)
@@ -43,7 +45,8 @@ def signup(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
-    return Response({'access_token': access_token}, status=status.HTTP_201_CREATED)
+    return Response(APIResponse(success=True, data={'access_token': access_token}, message="").__dict__(),
+                    status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
@@ -55,15 +58,18 @@ def login(request):
     password = body['password']
 
     if not username or not password:
-        return Response({'error': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
 
     user = User.objects.filter(username=username).first()
 
     if user is None:
-        return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
+                        status=status.HTTP_401_UNAUTHORIZED)
 
     if not user.check_password(password):
-        return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
+                        status=status.HTTP_401_UNAUTHORIZED)
 
     django_login(request, user)
 
@@ -77,7 +83,8 @@ def login(request):
     del user_profile_serializer['password']
     print(user_profile_serializer)
 
-    return Response({'access_token': access_token, 'user': user_profile_serializer}, status=status.HTTP_200_OK)
+    return Response(APIResponse(success=True, data={'access_token': access_token, 'user': user_profile_serializer},
+                                message="").__dict__(), status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -102,11 +109,15 @@ def account(request):
 
             print(user_profile_serializer)
 
-            return Response({'loggedAccount': user_profile_serializer}, status=status.HTTP_200_OK)
+            return Response(APIResponse(success=True, data={'user': user_profile_serializer},
+                                        message="").__dict__(), status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError:
-            return Response({'error': "Token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(APIResponse(success=False, data={}, message="Token hết hạn").__dict__(),
+                            status=status.HTTP_401_UNAUTHORIZED)
         except jwt.DecodeError:
-            return Response({'error': "Token decoding failed."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(APIResponse(success=False, data={}, message="Token decoding failed").__dict__(),
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         # Handle invalid or missing Authorization header
-        return Response({'error': 'Token is missing'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
+                        status=status.HTTP_401_UNAUTHORIZED)
