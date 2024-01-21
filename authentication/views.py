@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, Token
 from django.contrib.auth import login as django_login
 import json
 import jwt
@@ -93,6 +93,11 @@ def account(request):
     auth_header = request.META.get('HTTP_AUTHORIZATION', '')
     if auth_header.startswith('Bearer '):
         token_key = auth_header[len('Bearer '):]
+        try:
+            Token(token_key)  # Initialize the token
+        except Exception:
+            return Response(APIResponse(success=False, data={}, message="Token hết hạn hoặc không hợp lệ").__dict__(),
+                            status=status.HTTP_401_UNAUTHORIZED)
         print(token_key)
         secret_key = '!@lode@@!!123'
         try:
