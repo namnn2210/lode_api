@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Order
 from authentication.models import UserProfile
-from server.models import City, Subgame, APIResponse
+from server.models import City, Subgame, APIResponse, BalanceTransaction
 from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
@@ -24,8 +24,17 @@ class OrderView(APIView):
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
         user_profile = get_object_or_404(UserProfile, user=user)
 
+        # Check du so du trong tai khoan hay khong
         if body['total'] > user_profile.balance:
             return Response(APIResponse(success=False, data={}, message="Không đủ số dư trong tài khoản").__dict__())
+
+        # Check da nap du 100k hay khong
+        balance_transactions = BalanceTransaction.objects.filter(user=user, transaction_type=1, status=1)
+        total_deposit = 0
+        for transaction in balance_transactions:
+            total_deposit += transaction.amount
+        if total_deposit < 100000:
+            return Response(APIResponse(success=False, data={}, message="Không thể đặt cược nếu chưa nạp đủ 100.000 VND").__dict__())
 
         time_release = city.time_release
         time_release_object = datetime.strptime(time_release, "%H:%M:%S").time()
