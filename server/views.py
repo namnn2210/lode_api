@@ -150,6 +150,7 @@ def deposit(request):
     if body['transferType'] == 'in':
         user_profile = UserProfile.objects.get(code=body['content'])
         if user_profile:
+            # Tao giao dich trong DB
             deposit_transaction = BalanceTransaction(user=user_profile.user, transaction_type=1, status=1,
                                                      amount=body['transferAmount'])
             deposit_transaction.save()
