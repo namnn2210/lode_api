@@ -9,7 +9,8 @@ class BankingAdmin(admin.ModelAdmin):
 
 
 class BalanceTransactionAdmin(admin.ModelAdmin):
-    list_display = ["user", "transaction_type", "description", "amount", "status", "created_at", "updated_at"]
+    list_display = ["user", "transaction_type", "bank", "user_name", "bank_number", "amount", "status", "created_at",
+                    "updated_at"]
     list_filter = ["user", "transaction_type", ]
 
 

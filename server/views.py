@@ -5,6 +5,7 @@ from authentication.models import UserProfile
 from .models import City, Game, Subgame, Rate, Banking
 from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
+from banks.models import Bank
 from datetime import date
 from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, \
     BalanceTransactionSerializer
@@ -148,12 +149,15 @@ def get_banking(request):
 @api_view(['POST'])
 def deposit(request):
     body = json.loads(request.body.decode('utf-8'))
+    banking = Banking.objects.get(status=True)
     if body['transferType'] == 'in':
         user_profile = UserProfile.objects.get(code=body['content'])
         if user_profile:
             # Tao giao dich trong DB
             deposit_transaction = BalanceTransaction(user=user_profile.user, transaction_type=1, status=1,
-                                                     amount=body['transferAmount'])
+                                                     bank=banking.bank, user_name=banking.user_name,
+                                                     bank_number=banking.bank_number,
+                                                     amount=body['transferAmount'], description=body['content'])
             deposit_transaction.save()
             deposit_transaction_serializer = BalanceTransactionSerializer(deposit_transaction).data
             return Response(APIResponse(success=True, data=deposit_transaction_serializer, message="").__dict__())
@@ -171,6 +175,9 @@ def withdraw(request):
     {
         "user_id":1
         "amount":27000
+        "bank_id":23,
+        "user_name":"do van ninh",
+        "bank_number":"39389383"
     }
     :return:
     """
@@ -178,6 +185,10 @@ def withdraw(request):
     user = get_object_or_404(User, pk=body['user_id'])
     user_profile = get_object_or_404(UserProfile, user=user)
     amount = body['amount']
+    bank_id = body['bank_id']
+    user_name = body['user_name']
+    bank_number = body['bank_number']
+    bank = get_object_or_404(Bank, pk=bank_id)
     if amount > user_profile.balance:
         return Response(
             APIResponse(success=False, data={}, message="Số dư không đủ").__dict__())
@@ -196,7 +207,8 @@ def withdraw(request):
         return Response(
             APIResponse(success=False, data={}, message="Số tiền đặt cược ít hơn số tiền đã nạp vào").__dict__())
 
-    withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount)
+    withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount, bank=bank,
+                                  user_name=user_name, bank_number=bank_number)
     withdraw.save()
 
     withdraw_serializer = BalanceTransactionSerializer(withdraw).data
