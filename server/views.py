@@ -135,7 +135,7 @@ def get_banking(request):
             user_profile = get_object_or_404(UserProfile, user=user)
             content = {'content': user_profile.code}
 
-            banking = BankingSerializer(Banking.objects.filter(status=True)).data
+            banking = BankingSerializer(Banking.objects.get(status=True)).data
             banking.update(content)
             return Response(APIResponse(success=True, data=banking, message="").__dict__())
         except Exception as ex:
