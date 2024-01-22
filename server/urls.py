@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import fetch_games, fetch_rates, get_games, get_banking, get_rates,get_cities, deposit, \
+from .views import fetch_games, fetch_rates, get_games, get_banking, get_rates,get_cities, get_result, deposit, \
     withdraw, get_balance_transactions
 
 urlpatterns = [
@@ -7,7 +7,7 @@ urlpatterns = [
     path('rate/fetch', fetch_rates, name='fetch_rates'),
     path('api/game/<str:region>', get_games, name='get_games'),
     path('api/cities', get_cities, name='get_cities'),
-    # path('api/cities/<str:region>', get_all_cities, name='get_cities_with_region'),
+    path('api/result', get_result, name='get_result'),
     path('api/rate', get_rates, name='get_rates'),
     path('api/banking', get_banking, name='get_banking'),
     path('api/deposit', deposit, name='deposit'),

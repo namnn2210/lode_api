@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from authentication.models import UserProfile
 from .models import City, Game, Subgame, Rate, Banking
@@ -17,6 +17,8 @@ import pytz
 import requests
 import json
 import jwt
+import time
+import re
 
 desired_timezone = pytz.timezone('Asia/Bangkok')
 
@@ -66,7 +68,7 @@ def fetch_rates(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_games(request, region):
     games = GameSerializer(Game.objects.filter(region=region), many=True).data
     list_games = []
@@ -83,7 +85,7 @@ def get_games(request, region):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_cities(request):
     query_date = request.query_params.get('date', None)
     region = request.query_params.get('region', None)
@@ -106,6 +108,61 @@ def get_cities(request):
     return Response(APIResponse(success=True, data=cities, message="").__dict__())
 
 
+def extract_data(regex, response):
+    return re.findall(regex, response, re.DOTALL)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_result(request):
+    query_date = request.query_params.get('date', None)
+    city = request.query_params.get('city', None)
+    if city:
+        if query_date:
+            query_date = datetime.fromisoformat(query_date).strftime("%d-%m-%Y")
+            print(query_date)
+            str_date = f'/{query_date}'
+        else:
+            str_date = ''
+        current_timestamp = int(time.time())
+        url = f'https://www.xoso.net/getkqxs/{city}{str_date}.js_={current_timestamp}'
+        html_response = requests.get(url).text
+        db_regex = r'<td class="giaidb">\s{0,}(.*?)<\/td>'
+        giai1_regex = r'<td class="giai1">\s{0,}(.*?)<\/td>'
+        giai2_regex = r'<td class="giai2">\s{0,}(.*?)<\/td>'
+        giai3_regex = r'<td class="giai3">\s{0,}(.*?)<\/td>'
+        giai4_regex = r'<td class="giai4">\s{0,}(.*?)<\/td>'
+        giai5_regex = r'<td class="giai5">\s{0,}(.*?)<\/td>'
+        giai6_regex = r'<td class="giai6">\s{0,}(.*?)<\/td>'
+        giai7_regex = r'<td class="giai7">\s{0,}(.*?)<\/td>'
+        giai8_regex = r'<td class="giai8">\s{0,}(.*?)<\/td>'
+
+        db_data = extract_data(db_regex, html_response)
+        giai1_data = extract_data(giai1_regex, html_response)
+        giai2_data = extract_data(giai2_regex, html_response)
+        giai3_data = extract_data(giai3_regex, html_response)
+        giai4_data = extract_data(giai4_regex, html_response)
+        giai5_data = extract_data(giai5_regex, html_response)
+        giai6_data = extract_data(giai6_regex, html_response)
+        giai7_data = extract_data(giai7_regex, html_response)
+        giai8_data = extract_data(giai8_regex, html_response)
+
+        result_dict = {
+            "db": db_data,
+            "giai1": giai1_data,
+            "giai2": giai2_data,
+            "giai3": giai3_data,
+            "giai4": giai4_data,
+            "giai5": giai5_data,
+            "giai6": giai6_data,
+            "giai7": giai7_data,
+            "giai8": giai8_data,
+        }
+        return Response(APIResponse(success=False, data=result_dict, message="").__dict__())
+    else:
+        return Response(APIResponse(success=False, data={}, message="Thông tin đài không hợp lệ").__dict__())
+
+
 # @api_view(['GET'])
 # # @permission_classes([IsAuthenticated])
 # def get_all_cities(request, region=None):
@@ -117,7 +174,7 @@ def get_cities(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_rates(request):
     rates = RateSerializer(Rate.objects.all(), many=True).data
     return Response(APIResponse(success=True, data=rates, message="").__dict__())
@@ -150,6 +207,7 @@ def get_banking(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def deposit(request):
     body = json.loads(request.body.decode('utf-8'))
     banking = Banking.objects.get(status=True)
