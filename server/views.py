@@ -206,7 +206,7 @@ def withdraw(request):
 
     if total_amount_order < total_amount_deposit:
         return Response(
-            APIResponse(success=False, data={}, message="Số tiền đặt cược ít hơn số tiền đã nạp vào").__dict__())
+            APIResponse(success=False, data={}, message="Tổng số tiền đặt cược ít hơn tổng số tiền đã nạp vào").__dict__())
 
     withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount, bank=bank,
                                   user_name=user_name, bank_number=bank_number)
