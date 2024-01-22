@@ -18,25 +18,22 @@ from server.models import APIResponse
 @permission_classes([AllowAny])
 def signup(request):
     body = json.loads(request.body.decode('utf-8'))
-    first_name = body.get('first_name')
-    last_name = body.get('last_name')
-    username = body.get('username')
     password = body.get('password')
     password2 = body.get('password2')
     email = body.get('email')
     phone = body.get('phone')
 
-    print(username, password)
+    print(phone, password)
 
     if password != password2:
         return Response(APIResponse(success=False, data={}, message="Mật khẩu không trùng khớp").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    if not username or not password:
+    if not phone or not password:
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(username=username).exists():
+    if User.objects.filter(username=phone).exists():
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
     if User.objects.filter(email=email).exists():
@@ -46,8 +43,7 @@ def signup(request):
         return Response(APIResponse(success=False, data={}, message="Số điện thoại đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name,
-                                    last_name=last_name)
+    user = User.objects.create_user(username=phone, password=password, email=email)
     user_profile = UserProfile(user=user, phone=phone)
     user_profile.save()
 
@@ -70,14 +66,16 @@ def signup(request):
 def login(request):
     body = json.loads(request.body.decode('utf-8'))
     print(body)
-    username = body['username']
+    phone = body['phone']
     password = body['password']
 
-    if not username or not password:
+    user_profile = UserProfile.objects.get(phone=phone)
+
+    if not phone or not password:
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.filter(username=username).first()
+    user = user_profile.user
 
     if user is None:
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
@@ -92,7 +90,7 @@ def login(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
     # logged_account = UserSerializer(user).data
-    user_profile_serializer = UserProfileSerializer(get_object_or_404(UserProfile, user=user)).data
+    user_profile_serializer = UserProfileSerializer(user_profile).data
 
     user_serializer = UserSerializer(user).data
     user_profile_serializer.update(user_serializer)
