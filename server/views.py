@@ -6,34 +6,16 @@ from .models import City, Game, Subgame, Rate, Banking
 from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
 from banks.models import Bank
-from datetime import date
+from datetime import date, datetime
 from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, \
     BalanceTransactionSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 import requests
 import json
 import jwt
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def fetch_cities(request):
-    regions = ['bac', 'trung', 'nam']
-    current_date = date.today().strftime('%m-%d-%Y')
-    data = []
-    for region in regions:
-        url = f'https://api-sg.quayso1.com/lotte/cities?date={current_date}&region={region}'
-        response = requests.get(url)
-        if response.status_code == 200:
-            data += response.json()['rows']
-    for item in data:
-        city = City(id=item['id'], name=item['name'], region=item['region'], date=item['date'], feature=item['feature'],
-                    time_release=item['time_release'], status=item['status'], created_at=item['created_at'],
-                    updated_at=item['updated_at'])
-        city.save()
-    return Response({'cities': data})
 
 
 @api_view(['GET'])
@@ -99,19 +81,30 @@ def get_games(request, region):
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
-def get_cities(request, region):
-    cities = CitySerializer(City.objects.filter(region=region), many=True).data
-    return Response(APIResponse(success=True, data=cities, message="").__dict__())
-
-
-@api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-def get_all_cities(request, region=None):
-    if region:
-        cities = CitySerializer(City.objects.filter(region=region), many=True).data
+def get_cities(request):
+    query_date = request.query_params.get('date', None)
+    weekday = None
+    if not query_date:
+        print('no params -> get today cities')
+        today = datetime.today()
+        print('today', today)
+        weekday = datetime.today().weekday()
+        print('day of week', weekday)
     else:
-        cities = CitySerializer(City.objects.all(), many=True).data
+        date_object = datetime.fromisoformat(query_date)
+        weekday = date_object.weekday()
+    cities = CitySerializer(City.objects.filter(Q(date__contains=str(weekday)) | Q(date='')), many=True).data
     return Response(APIResponse(success=True, data=cities, message="").__dict__())
+
+
+# @api_view(['GET'])
+# # @permission_classes([IsAuthenticated])
+# def get_all_cities(request, region=None):
+#     if region:
+#         cities = CitySerializer(City.objects.filter(region=region), many=True).data
+#     else:
+#         cities = CitySerializer(City.objects.all(), many=True).data
+#     return Response(APIResponse(success=True, data=cities, message="").__dict__())
 
 
 @api_view(['GET'])
@@ -206,7 +199,8 @@ def withdraw(request):
 
     if total_amount_order < total_amount_deposit:
         return Response(
-            APIResponse(success=False, data={}, message="Tổng số tiền đặt cược ít hơn tổng số tiền đã nạp vào").__dict__())
+            APIResponse(success=False, data={},
+                        message="Tổng số tiền đặt cược ít hơn tổng số tiền đã nạp vào").__dict__())
 
     withdraw = BalanceTransaction(user=user, transaction_type=2, status=0, amount=amount, bank=bank,
                                   user_name=user_name, bank_number=bank_number)

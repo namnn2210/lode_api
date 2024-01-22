@@ -10,6 +10,7 @@ class City(models.Model):
     region = models.CharField(max_length=50)
     feature = models.IntegerField(default=0)
     time_release = models.CharField(max_length=8)
+    result_domain = models.CharField(max_length=50, null=True)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
