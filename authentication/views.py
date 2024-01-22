@@ -18,6 +18,7 @@ from server.models import APIResponse
 @permission_classes([AllowAny])
 def signup(request):
     body = json.loads(request.body.decode('utf-8'))
+    first_name = body.get('first_name','')
     password = body.get('password')
     password2 = body.get('password2')
     email = body.get('email')
@@ -43,7 +44,7 @@ def signup(request):
         return Response(APIResponse(success=False, data={}, message="Số điện thoại đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=phone, password=password, email=email)
+    user = User.objects.create_user(username=phone, password=password, email=email, first_name=first_name)
     user_profile = UserProfile(user=user, phone=phone)
     user_profile.save()
 
