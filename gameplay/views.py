@@ -24,7 +24,7 @@ class OrderView(APIView):
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
         user_profile = get_object_or_404(UserProfile, user=user)
 
-        pay_number = mode.pay_number
+        pay_number = mode.pay_number * 1000
         len_number = len(body['numbers'])
         total = pay_number * len_number
 
