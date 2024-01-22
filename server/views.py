@@ -13,9 +13,12 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
+import pytz
 import requests
 import json
 import jwt
+
+desired_timezone = pytz.timezone('Asia/Bangkok')
 
 
 @api_view(['GET'])
@@ -86,7 +89,7 @@ def get_cities(request):
     weekday = None
     if not query_date:
         print('no params -> get today cities')
-        today = datetime.today()
+        today = datetime.now(desired_timezone).date()
         print('today', today)
         weekday = datetime.today().weekday()
         print('day of week', weekday)
