@@ -146,15 +146,15 @@ def get_result(request):
         giai8_data = extract_data(giai8_regex, html_response)
 
         result_dict = {
-            "db": db_data,
-            "giai1": giai1_data,
-            "giai2": giai2_data,
-            "giai3": giai3_data,
-            "giai4": giai4_data,
-            "giai5": giai5_data,
-            "giai6": giai6_data,
-            "giai7": giai7_data,
-            "giai8": giai8_data,
+            "special": db_data[0],
+            "prize1": giai1_data[0],
+            "prize2": giai2_data[0],
+            "prize3": giai3_data[0],
+            "prize4": giai4_data[0],
+            "prize5": giai5_data[0],
+            "prize6": giai6_data[0],
+            "prize7": giai7_data[0],
+            "prize8": giai8_data[0],
         }
         return Response(APIResponse(success=True, data=result_dict, message="").__dict__())
     else:
