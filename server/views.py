@@ -98,7 +98,8 @@ def get_cities(request):
         date_object = datetime.fromisoformat(query_date)
         weekday = date_object.weekday()
     if region:
-        cities = CitySerializer(City.objects.filter(Q(date__contains=str(weekday)) | Q(date='') & Q(region=region)),
+        print('region', region)
+        cities = CitySerializer(City.objects.filter((Q(date__contains=str(weekday)) | Q(date='')) & Q(region=region)),
                                 many=True).data
     else:
         cities = CitySerializer(City.objects.filter(Q(date__contains=str(weekday)) | Q(date='')), many=True).data
