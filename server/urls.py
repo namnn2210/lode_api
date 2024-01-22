@@ -15,5 +15,6 @@ urlpatterns = [
     path('api/withdraw', withdraw, name='withdraw'),
     path('api/balance_transaction', get_balance_transactions, name='get_balance_transactions'),
 
-    path('api/subgame', SubgameAPIView.as_view(), name='subgame')
+    path('api/subgame', SubgameAPIView.as_view(), name='subgame-list'),
+    path('api/subgame/<int:subgame_id>', SubgameAPIView.as_view(), name='subgame-detail')
 ]
