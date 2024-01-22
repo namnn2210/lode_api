@@ -91,7 +91,7 @@ def get_cities(request):
         print('no params -> get today cities')
         today = datetime.now(desired_timezone).date()
         print('today', today)
-        weekday = datetime.today().weekday()
+        weekday = today.weekday()
         print('day of week', weekday)
     else:
         date_object = datetime.fromisoformat(query_date)
