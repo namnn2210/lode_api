@@ -119,8 +119,6 @@ def get_result(request):
     city = request.query_params.get('city', None)
     if city:
         if query_date:
-            query_date = datetime.fromisoformat(query_date).strftime("%d-%m-%Y")
-            print(query_date)
             str_date = f'/{query_date}'
         else:
             str_date = ''
