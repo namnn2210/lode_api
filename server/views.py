@@ -158,7 +158,7 @@ def get_result(request):
             "giai7": giai7_data,
             "giai8": giai8_data,
         }
-        return Response(APIResponse(success=False, data=result_dict, message="").__dict__())
+        return Response(APIResponse(success=True, data=result_dict, message="").__dict__())
     else:
         return Response(APIResponse(success=False, data={}, message="Thông tin đài không hợp lệ").__dict__())
 
