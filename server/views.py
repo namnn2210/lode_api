@@ -86,6 +86,7 @@ def get_games(request, region):
 # @permission_classes([IsAuthenticated])
 def get_cities(request):
     query_date = request.query_params.get('date', None)
+    region = request.query_params.get('region', None)
     weekday = None
     if not query_date:
         print('no params -> get today cities')
@@ -96,7 +97,11 @@ def get_cities(request):
     else:
         date_object = datetime.fromisoformat(query_date)
         weekday = date_object.weekday()
-    cities = CitySerializer(City.objects.filter(Q(date__contains=str(weekday)) | Q(date='')), many=True).data
+    if region:
+        cities = CitySerializer(City.objects.filter(Q(date__contains=str(weekday)) | Q(date='') & Q(region=region)),
+                                many=True).data
+    else:
+        cities = CitySerializer(City.objects.filter(Q(date__contains=str(weekday)) | Q(date='')), many=True).data
     return Response(APIResponse(success=True, data=cities, message="").__dict__())
 
 
