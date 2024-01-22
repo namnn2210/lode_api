@@ -24,8 +24,12 @@ class OrderView(APIView):
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
         user_profile = get_object_or_404(UserProfile, user=user)
 
+        pay_number = mode.pay_number
+        len_number = len(body['numbers'])
+        total = pay_number * len_number
+
         # Check du so du trong tai khoan hay khong
-        if body['total'] > user_profile.balance:
+        if total > user_profile.balance:
             return Response(APIResponse(success=False, data={}, message="Không đủ số dư trong tài khoản").__dict__())
 
         # Check da nap du 100k hay khong
@@ -56,7 +60,7 @@ class OrderView(APIView):
 
             order = Order(user=user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
                           numbers=body['numbers'],
-                          pay_number=body['pay_number'], total=body['total'])
+                          pay_number=pay_number, total=total)
             order_dict = OrderSerializer(order).data
             order.save()
             return Response(APIResponse(success=True, data=order_dict, message="").__dict__())
