@@ -55,8 +55,13 @@ def signup(request):
 
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
+    user_profile_serializer = UserProfileSerializer(get_object_or_404(UserProfile, user=user)).data
+    user_serializer = UserSerializer(user).data
+    user_profile_serializer.update(user_serializer)
+    del user_profile_serializer['password']
 
-    return Response(APIResponse(success=True, data={'access_token': access_token}, message="").__dict__(),
+    return Response(APIResponse(success=True, data={'access_token': access_token, 'user': user_profile_serializer},
+                                message="").__dict__(),
                     status=status.HTTP_201_CREATED)
 
 
@@ -120,11 +125,12 @@ def account(request):
 
             print(user_profile_serializer)
 
-            return Response(APIResponse(success=True, data={'user': user_profile_serializer}, message="").__dict__(), status=status.HTTP_200_OK)
+            return Response(APIResponse(success=True, data={'user': user_profile_serializer}, message="").__dict__(),
+                            status=status.HTTP_200_OK)
         except Exception as ex:
-            return Response(APIResponse(success=False, data={}, message="Token hết hạn hoặc không hợp lệ").__dict__(), status=status.HTTP_401_UNAUTHORIZED)
+            return Response(APIResponse(success=False, data={}, message="Token hết hạn hoặc không hợp lệ").__dict__(),
+                            status=status.HTTP_401_UNAUTHORIZED)
     else:
         # Handle invalid or missing Authorization header
-        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__(), status=status.HTTP_401_UNAUTHORIZED)
-
-
+        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
+                        status=status.HTTP_401_UNAUTHORIZED)
