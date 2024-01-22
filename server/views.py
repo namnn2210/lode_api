@@ -321,15 +321,15 @@ def get_balance_transactions(request):
 
 ####################################### ADMIN RESTAPI ##############################################################
 class SubgameAPIView(APIView):
-    def get(self, request, pk=None):
-        if pk is None:
+    def get(self, request, subgame_id=None):
+        if subgame_id is None:
             # Get all Subgames
             subgames = Subgame.objects.all()
             serializer = SubGameSerializer(subgames, many=True)
         else:
             # Get a specific Subgame by ID
             try:
-                subgame = Subgame.objects.get(pk=pk)
+                subgame = Subgame.objects.get(pk=subgame_id)
                 serializer = SubGameSerializer(subgame)
             except Subgame.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -343,9 +343,9 @@ class SubgameAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, pk):
+    def put(self, request, subgame_id):
         try:
-            subgame = Subgame.objects.get(pk=pk)
+            subgame = Subgame.objects.get(pk=subgame_id)
         except Subgame.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -355,9 +355,9 @@ class SubgameAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, subgame_id):
         try:
-            subgame = Subgame.objects.get(pk=pk)
+            subgame = Subgame.objects.get(pk=subgame_id)
         except Subgame.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
