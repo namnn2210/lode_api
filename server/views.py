@@ -109,7 +109,10 @@ def get_cities(request):
 
 
 def extract_data(regex, response):
-    return re.findall(regex, response, re.DOTALL)
+    results = re.findall(regex, response, re.DOTALL)
+    if len(results) > 0:
+        return results[0]
+    return ''
 
 
 @api_view(['GET'])
