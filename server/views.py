@@ -190,7 +190,7 @@ def withdraw(request):
     user_name = body['user_name']
     bank_number = body['bank_number']
     bank = get_object_or_404(Bank, pk=bank_id)
-    if amount > user_profile.balance:
+    if int(amount) > user_profile.balance:
         return Response(
             APIResponse(success=False, data={}, message="Số dư không đủ").__dict__())
     # Get all orders
