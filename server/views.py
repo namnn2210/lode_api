@@ -332,34 +332,40 @@ class SubgameAPIView(APIView):
                 subgame = Subgame.objects.get(pk=subgame_id)
                 serializer = SubGameSerializer(subgame)
             except Subgame.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                                status=status.HTTP_404_NOT_FOUND)
 
-        return Response(serializer.data)
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
 
     def post(self, request):
         serializer = SubGameSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                            status=status.HTTP_201_CREATED)
+        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, subgame_id):
         try:
             subgame = Subgame.objects.get(pk=subgame_id)
         except Subgame.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                                status=status.HTTP_404_NOT_FOUND)
 
         serializer = SubGameSerializer(subgame, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, subgame_id):
         try:
             subgame = Subgame.objects.get(pk=subgame_id)
         except Subgame.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                                status=status.HTTP_404_NOT_FOUND)
 
         subgame.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(APIResponse(success=True, data={}, message="Xóa thành công").__dict__())
