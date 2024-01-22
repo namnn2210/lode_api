@@ -6,13 +6,15 @@ from .models import City, Game, Subgame, Rate, Banking
 from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
 from banks.models import Bank
-from datetime import date, datetime
+from datetime import datetime
 from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, \
     BalanceTransactionSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
+from rest_framework import status
 import pytz
 import requests
 import json
@@ -128,6 +130,8 @@ def get_result(request):
         current_timestamp = int(time.time())
         url = f'https://www.xoso.net/getkqxs/{city}{str_date}.js_={current_timestamp}'
         html_response = requests.get(url).text
+        weekday_regex = r'<td class="thu"\s>\s{0,}(.*?)<\/td>'
+        date_regex = r'<td class="ngay">\s{0,}Ng&agrave;y:\s(.*?)\s<\/td>'
         db_regex = r'<td class="giaidb">\s{0,}(.*?)<\/td>'
         giai1_regex = r'<td class="giai1">\s{0,}(.*?)<\/td>'
         giai2_regex = r'<td class="giai2">\s{0,}(.*?)<\/td>'
@@ -138,6 +142,8 @@ def get_result(request):
         giai7_regex = r'<td class="giai7">\s{0,}(.*?)<\/td>'
         giai8_regex = r'<td class="giai8">\s{0,}(.*?)<\/td>'
 
+        weekday_data = extract_data(weekday_regex, html_response)
+        date_data = extract_data(date_regex, html_response)
         db_data = extract_data(db_regex, html_response)
         giai1_data = extract_data(giai1_regex, html_response)
         giai2_data = extract_data(giai2_regex, html_response)
@@ -148,18 +154,26 @@ def get_result(request):
         giai7_data = extract_data(giai7_regex, html_response)
         giai8_data = extract_data(giai8_regex, html_response)
 
-        result_dict = {
-            "special": db_data,
-            "prize1": giai1_data,
-            "prize2": giai2_data,
-            "prize3": giai3_data,
-            "prize4": giai4_data,
-            "prize5": giai5_data,
-            "prize6": giai6_data,
-            "prize7": giai7_data,
-            "prize8": giai8_data,
+        print(weekday_data)
+        formatted_date_data = date_data.replace('/', '-')
+
+        title = f'{weekday_data} ngày {formatted_date_data}'
+        data = {
+            'title': title,
+            'result': {
+                "special": db_data,
+                "prize1": giai1_data,
+                "prize2": giai2_data,
+                "prize3": giai3_data,
+                "prize4": giai4_data,
+                "prize5": giai5_data,
+                "prize6": giai6_data,
+                "prize7": giai7_data,
+                "prize8": giai8_data,
+            }
         }
-        return Response(APIResponse(success=True, data=result_dict, message="").__dict__())
+
+        return Response(APIResponse(success=True, data=data, message="").__dict__())
     else:
         return Response(APIResponse(success=False, data={}, message="Thông tin đài không hợp lệ").__dict__())
 
@@ -303,3 +317,49 @@ def get_balance_transactions(request):
             return Response(APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
     else:
         return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
+
+
+####################################### ADMIN RESTAPI ##############################################################
+class SubgameAPIView(APIView):
+    def get(self, request, pk=None):
+        if pk is None:
+            # Get all Subgames
+            subgames = Subgame.objects.all()
+            serializer = SubGameSerializer(subgames, many=True)
+        else:
+            # Get a specific Subgame by ID
+            try:
+                subgame = Subgame.objects.get(pk=pk)
+                serializer = SubGameSerializer(subgame)
+            except Subgame.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SubGameSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        try:
+            subgame = Subgame.objects.get(pk=pk)
+        except Subgame.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SubGameSerializer(subgame, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try:
+            subgame = Subgame.objects.get(pk=pk)
+        except Subgame.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        subgame.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
