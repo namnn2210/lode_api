@@ -38,7 +38,8 @@ class OrderView(APIView):
         for transaction in balance_transactions:
             total_deposit += transaction.amount
         if total_deposit < 100000:
-            return Response(APIResponse(success=False, data={}, message="Không thể đặt cược nếu chưa nạp đủ 100.000 VND").__dict__())
+            return Response(APIResponse(success=False, data={},
+                                        message="Không thể đặt cược nếu chưa nạp đủ 100.000 VND").__dict__())
 
         time_release = city.time_release
         time_release_object = datetime.strptime(time_release, "%H:%M:%S").time()
@@ -88,3 +89,17 @@ class OrderView(APIView):
         serialized_data = OrderSerializer(result_page, many=True).data
         return Response(
             APIResponse(success=True, data=serialized_data, message="").__dict__())
+
+    def put(self, request, order_id):
+        try:
+            order = Order.objects.get(pk=order_id, status=True)
+        except Order.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="Không tìm thấy lệnh").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = OrderSerializer(order, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)

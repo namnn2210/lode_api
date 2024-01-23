@@ -294,32 +294,6 @@ def withdraw(request):
     return Response(APIResponse(success=True, data=withdraw_serializer, message="").__dict__())
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_balance_transactions(request):
-    paginator = PageNumberPagination()
-    paginator.page_size = 10
-    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    if auth_header.startswith('Bearer '):
-        token_key = auth_header[len('Bearer '):]
-        print(token_key)
-        secret_key = '!@lode@@!!123'
-        try:
-            # Decode the JWT
-            decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
-            user_id = decoded_token['user_id']
-            user = get_object_or_404(User, pk=user_id)
-            balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
-            result_page = paginator.paginate_queryset(balance_transactions, request)
-            serialized_data = BalanceTransactionSerializer(result_page, many=True).data
-            return Response(APIResponse(success=True, data=serialized_data, message="").__dict__())
-        except jwt.ExpiredSignatureError as ex:
-            print(str(ex))
-            return Response(APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
-    else:
-        return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
-
-
 ####################################### ADMIN RESTAPI ##############################################################
 
 ####################################### GAME RESTAPI ##############################################################
@@ -526,3 +500,32 @@ class UserProfileAPIView(APIView):
         user_profile.save()
         return Response(APIResponse(success=True, data={}, message="User profile deleted successfully").__dict__(),
                         status=status.HTTP_204_NO_CONTENT)
+
+
+####################################### BALANCE TRANSACTIONS RESTAPI ##############################################################
+@permission_classes([IsAuthenticated])
+class BalanceTransactionsAPIView(APIView):
+
+    def get(self, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if auth_header.startswith('Bearer '):
+            token_key = auth_header[len('Bearer '):]
+            print(token_key)
+            secret_key = '!@lode@@!!123'
+            try:
+                # Decode the JWT
+                decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
+                user_id = decoded_token['user_id']
+                user = get_object_or_404(User, pk=user_id)
+                balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
+                result_page = paginator.paginate_queryset(balance_transactions, request)
+                serialized_data = BalanceTransactionSerializer(result_page, many=True).data
+                return Response(APIResponse(success=True, data=serialized_data, message="").__dict__())
+            except jwt.ExpiredSignatureError as ex:
+                print(str(ex))
+                return Response(
+                    APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
+        else:
+            return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
