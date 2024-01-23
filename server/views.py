@@ -338,7 +338,7 @@ class GameAPIView(APIView):
         :return:
         """
         body = json.loads(request.body.decode('utf-8'))
-        region = ['bac', 'trung','name']
+        region = ['bac', 'trung', 'nam']
         serializer = GameSerializer(data=body)
         if body['region'] in region:
             if serializer.is_valid():
@@ -353,7 +353,7 @@ class GameAPIView(APIView):
 
     def put(self, request, game_id):
         body = json.loads(request.body.decode('utf-8'))
-        region = ['bac', 'trung', 'name']
+        region = ['bac', 'trung', 'nam']
         if body['region'] in region:
             try:
                 game = Game.objects.get(pk=game_id)
