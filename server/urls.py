@@ -19,5 +19,5 @@ urlpatterns = [
     path('api/subgame/<int:subgame_id>', SubgameAPIView.as_view(), name='subgame-detail'),
 
     path('api/game', GameAPIView.as_view(), name='game-list'),
-    path('api/game/<int:game>', GameAPIView.as_view(), name='game-detail')
+    path('api/game/<int:game_id>', GameAPIView.as_view(), name='game-detail')
 ]
