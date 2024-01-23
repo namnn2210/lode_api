@@ -320,6 +320,47 @@ def get_balance_transactions(request):
 
 
 ####################################### ADMIN RESTAPI ##############################################################
+
+class GameAPIView(APIView):
+    def get(self, request):
+        games = Game.objects.all()
+        serializer = GameSerializer(games, many=True)
+
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+
+    def post(self, request):
+        """
+        :param request: {
+            'type':'a',
+            'name':'b',
+            'region':'bac/trung/nam'
+        }
+        :return:
+        """
+        body = json.loads(request.body.decode('utf-8'))
+        serializer = GameSerializer(data=body)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                            status=status.HTTP_201_CREATED)
+        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, game_id):
+        body = json.loads(request.body.decode('utf-8'))
+        try:
+            game = Game.objects.get(pk=game_id)
+        except Subgame.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = GameSerializer(game, data=body)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
 class SubgameAPIView(APIView):
     def get(self, request, subgame_id=None):
         if subgame_id is None:
@@ -351,7 +392,7 @@ class SubgameAPIView(APIView):
             subgame = Subgame.objects.get(pk=subgame_id)
         except Subgame.DoesNotExist:
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
-                                status=status.HTTP_404_NOT_FOUND)
+                            status=status.HTTP_404_NOT_FOUND)
 
         serializer = SubGameSerializer(subgame, data=request.data)
         if serializer.is_valid():
@@ -365,7 +406,7 @@ class SubgameAPIView(APIView):
             subgame = Subgame.objects.get(pk=subgame_id)
         except Subgame.DoesNotExist:
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
-                                status=status.HTTP_404_NOT_FOUND)
+                            status=status.HTTP_404_NOT_FOUND)
 
         subgame.delete()
         return Response(APIResponse(success=True, data={}, message="Xóa thành công").__dict__())
