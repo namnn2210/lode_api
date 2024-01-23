@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import fetch_games, fetch_rates, get_games, get_banking, get_rates, get_cities, get_result, deposit, \
     withdraw, get_balance_transactions
-from .views import SubgameAPIView, GameAPIView
+from .views import SubgameAPIView, GameAPIView, UserAPIView, UserProfileAPIView
 
 urlpatterns = [
     path('game/fetch', fetch_games, name='fetch_games'),
@@ -15,9 +15,18 @@ urlpatterns = [
     path('api/withdraw', withdraw, name='withdraw'),
     path('api/balance_transaction', get_balance_transactions, name='get_balance_transactions'),
 
-    path('api/subgame', SubgameAPIView.as_view(), name='subgame-list'),
-    path('api/subgame/<int:subgame_id>', SubgameAPIView.as_view(), name='subgame-detail'),
+    path('api/subgames', SubgameAPIView.as_view(), name='subgame-list'),
+    path('api/subgames/<int:subgame_id>', SubgameAPIView.as_view(), name='subgame-detail'),
 
-    path('api/game', GameAPIView.as_view(), name='game-list'),
-    path('api/game/<int:game_id>', GameAPIView.as_view(), name='game-detail')
+    path('api/games', GameAPIView.as_view(), name='game-list'),
+    path('api/games/<int:game_id>', GameAPIView.as_view(), name='game-detail'),
+
+    path('api/users', UserAPIView.as_view(), name='user-list'),
+    path('api/users/<int:user_id>', UserAPIView.as_view(), name='user-detail'),
+
+    path('api/users', UserAPIView.as_view(), name='user-list'),
+    path('api/users/<int:user_id>', UserAPIView.as_view(), name='user-detail'),
+
+    path('api/user_profiles', UserProfileAPIView.as_view(), name='user-profile-list'),
+    path('api/user_profiles/<int:user_profile_id>', UserProfileAPIView.as_view(), name='user-profile-detail'),
 ]

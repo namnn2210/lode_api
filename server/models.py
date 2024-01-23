@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from banks.models import Bank
+from datetime import datetime
 
 
 # Create your models here.
@@ -26,6 +27,9 @@ class Game(models.Model):
     type = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     region = models.CharField(max_length=255, default='bac')
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     class Meta:
         db_table = 'games'
@@ -62,6 +66,7 @@ class Rate(models.Model):
     rate = models.DecimalField(max_digits=5, default=0.0, decimal_places=2)
     group_id = models.IntegerField(default=1)
     category_id = models.IntegerField(default=1)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 

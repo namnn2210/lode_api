@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from authentication.models import UserProfile
+from authentication.serializers import UserSerializer, UserProfileSerializer
 from .models import City, Game, Subgame, Rate, Banking
 from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
@@ -321,9 +322,11 @@ def get_balance_transactions(request):
 
 ####################################### ADMIN RESTAPI ##############################################################
 
+####################################### GAME RESTAPI ##############################################################
+@permission_classes([IsAuthenticated])
 class GameAPIView(APIView):
     def get(self, request):
-        games = Game.objects.all()
+        games = Game.objects.filter(status=True)
         serializer = GameSerializer(games, many=True)
 
         return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
@@ -356,7 +359,7 @@ class GameAPIView(APIView):
         region = ['bac', 'trung', 'nam']
         if body['region'] in region:
             try:
-                game = Game.objects.get(pk=game_id)
+                game = Game.objects.get(pk=game_id, status=True)
             except Subgame.DoesNotExist:
                 return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                                 status=status.HTTP_404_NOT_FOUND)
@@ -370,12 +373,25 @@ class GameAPIView(APIView):
         return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, game_id):
+        try:
+            game = Game.objects.get(pk=game_id, status=True)
+        except Game.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
 
+        game.status = False
+        game.save()
+        return Response(APIResponse(success=True, data={}, message="Xóa thành công").__dict__())
+
+
+####################################### SUBGAME RESTAPI ##############################################################
+@permission_classes([IsAuthenticated])
 class SubgameAPIView(APIView):
     def get(self, request, subgame_id=None):
         if subgame_id is None:
             # Get all Subgames
-            subgames = Subgame.objects.all()
+            subgames = Subgame.objects.filter(active=True)
             serializer = SubGameSerializer(subgames, many=True)
         else:
             # Get a specific Subgame by ID
@@ -399,7 +415,7 @@ class SubgameAPIView(APIView):
 
     def put(self, request, subgame_id):
         try:
-            subgame = Subgame.objects.get(pk=subgame_id)
+            subgame = Subgame.objects.get(pk=subgame_id, active=True)
         except Subgame.DoesNotExist:
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
@@ -413,10 +429,100 @@ class SubgameAPIView(APIView):
 
     def delete(self, request, subgame_id):
         try:
-            subgame = Subgame.objects.get(pk=subgame_id)
+            subgame = Subgame.objects.get(pk=subgame_id, active=True)
         except Subgame.DoesNotExist:
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
-        subgame.delete()
+        subgame.active = 0
+        subgame.save()
         return Response(APIResponse(success=True, data={}, message="Xóa thành công").__dict__())
+
+
+####################################### USER RESTAPI ##############################################################
+@permission_classes([IsAuthenticated])
+class UserAPIView(APIView):
+    def get(self, request):
+        users = User.objects.filter(is_active=1)
+        serializer = UserSerializer(users, many=True)
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                            status=status.HTTP_201_CREATED)
+        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, user_id):
+        try:
+            user = User.objects.get(pk=user_id, is_active=1)
+        except User.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="User not found").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, user_id):
+        try:
+            user = User.objects.get(pk=user_id, is_active=1)
+        except User.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="User not found").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        user.is_active = 0
+        user.save()
+        return Response(APIResponse(success=True, data={}, message="User deleted successfully").__dict__(),
+                        status=status.HTTP_204_NO_CONTENT)
+
+
+####################################### USER PROFILE RESTAPI ##############################################################
+
+@permission_classes([IsAuthenticated])
+class UserProfileAPIView(APIView):
+    def get(self, request):
+        user_profiles = UserProfile.objects.filter(status=True)
+        serializer = UserProfileSerializer(user_profiles, many=True)
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+
+    def post(self, request):
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                            status=status.HTTP_201_CREATED)
+        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, user_profile_id):
+        try:
+            user_profile = UserProfile.objects.get(pk=user_profile_id, status=True)
+        except UserProfile.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="User profile not found").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserProfileSerializer(user_profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, user_profile_id):
+        try:
+            user_profile = UserProfile.objects.get(pk=user_profile_id, status=True)
+        except UserProfile.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="User profile not found").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        user_profile.status = False
+        user_profile.save()
+        return Response(APIResponse(success=True, data={}, message="User profile deleted successfully").__dict__(),
+                        status=status.HTTP_204_NO_CONTENT)

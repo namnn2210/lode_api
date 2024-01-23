@@ -3,6 +3,7 @@ from .models import Game, Subgame, City, Rate, Banking, BalanceTransaction
 
 from banks.serializer import BankSerializer
 
+
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
@@ -37,6 +38,7 @@ class BankingSerializer(serializers.ModelSerializer):
 
 class BalanceTransactionSerializer(serializers.ModelSerializer):
     bank = BankSerializer()
+
     class Meta:
         model = BalanceTransaction
         fields = '__all__'
