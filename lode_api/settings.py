@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'authentication',
     "corsheaders",
     'gameplay',
-    'banks'
+    'banks',
+    'statistical'
 ]
 
 MIDDLEWARE = [

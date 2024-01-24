@@ -10,8 +10,10 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from .serializers import OrderSerializer
+from authentication.serializers import UserSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
+from django.db.models import Count
 import json
 
 
@@ -103,3 +105,4 @@ class OrderView(APIView):
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
         return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
+
