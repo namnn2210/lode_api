@@ -384,7 +384,7 @@ class SubgameAPIView(APIView):
             serializer.save()
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
                             status=status.HTTP_201_CREATED)
-        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+        return Response(APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, subgame_id):
@@ -398,7 +398,7 @@ class SubgameAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+        return Response(APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, subgame_id):
