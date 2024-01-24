@@ -380,12 +380,12 @@ class SubgameAPIView(APIView):
 
     def post(self, request):
         serializer = SubGameSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
-                            status=status.HTTP_201_CREATED)
-        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        serializer.save()
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                        status=status.HTTP_201_CREATED)
+        # return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, subgame_id):
         try:
@@ -395,11 +395,11 @@ class SubgameAPIView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = SubGameSerializer(subgame, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        serializer.save()
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        # return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, subgame_id):
         try:
@@ -423,12 +423,12 @@ class UserAPIView(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
-                            status=status.HTTP_201_CREATED)
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        serializer.save()
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                        status=status.HTTP_201_CREATED)
+        # return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, user_id):
         try:
@@ -438,11 +438,11 @@ class UserAPIView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        serializer.save()
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        # return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_id):
         try:
@@ -468,12 +468,12 @@ class UserProfileAPIView(APIView):
 
     def post(self, request):
         serializer = UserProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
-                            status=status.HTTP_201_CREATED)
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        serializer.save()
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                        status=status.HTTP_201_CREATED)
+        # return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, user_profile_id):
         try:
@@ -483,11 +483,11 @@ class UserProfileAPIView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserProfileSerializer(user_profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        serializer.save()
+        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        # return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_profile_id):
         try:
