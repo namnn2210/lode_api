@@ -45,14 +45,14 @@ class Subgame(models.Model):
     guide = models.TextField(max_length=255)
     rate = models.IntegerField(default=0)
     pay_number = models.IntegerField(default=0)
-    min_amount = models.IntegerField(default=0)
-    max_amount = models.BigIntegerField(default=0)
+    min_amount = models.IntegerField(default=1000)
+    max_amount = models.BigIntegerField(default=10000000000)
     multi = models.IntegerField(default=0)
     code = models.CharField(max_length=255)
     max = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
     max_number = models.IntegerField(default=0)
 
     class Meta:
