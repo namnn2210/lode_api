@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from .serializers import OrderSerializer
-from authentication.serializers import UserSerializer
+from authentication.serializers import UserSerializer, UserProfileSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from django.db.models import Count
@@ -75,16 +75,21 @@ class OrderView(APIView):
         paginator = PageNumberPagination()
         paginator.page_size = 10
         if request.query_params.get('start_date') and request.query_params.get('end_date'):
-            start_date = datetime.strptime(request.query_params.get('start_date'),"%Y-%m-%d").date()
-            end_date = datetime.strptime(request.query_params.get('end_date'),"%Y-%m-%d").date()  # Get the second parameter
+            start_date = datetime.strptime(request.query_params.get('start_date'), "%Y-%m-%d").date()
+            end_date = datetime.strptime(request.query_params.get('end_date'),
+                                         "%Y-%m-%d").date()  # Get the second parameter
 
             print(start_date, end_date)
             records = Order.objects.filter(
-                Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode','user')
+                Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode', 'user')
         else:
-            records = Order.objects.all().select_related('city', 'mode','user')
+            records = Order.objects.all().select_related('city', 'mode', 'user')
         result_page = paginator.paginate_queryset(records, request)
         serialized_data = OrderSerializer(result_page, many=True).data
+        for data in serialized_data:
+            data['user_profile'] = UserProfileSerializer(
+                get_object_or_404(UserProfile, user_id=data['user']['id'])).data
+            del data['user']
         return Response(
             APIResponse(success=True, data=serialized_data, message="").__dict__())
 
@@ -101,4 +106,3 @@ class OrderView(APIView):
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
         return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
-
