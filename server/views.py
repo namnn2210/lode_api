@@ -414,7 +414,7 @@ class SubgameAPIView(APIView):
 
 
 ####################################### USER RESTAPI ##############################################################
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class UserAPIView(APIView):
     def get(self, request):
         users = User.objects.filter(is_active=1)
@@ -427,33 +427,38 @@ class UserAPIView(APIView):
             serializer.save()
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
                             status=status.HTTP_201_CREATED)
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        return Response(APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, user_id):
         try:
             user = User.objects.get(pk=user_id, is_active=1)
         except User.DoesNotExist:
-            return Response(APIResponse(success=False, data={}, message="User not found").__dict__(),
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            request_data_first_name = request.data.get("first_name")
+            user.first_name = request_data_first_name
+            user.save()
+            serializer = UserSerializer(user)
+            # if serializer.is_valid():
+            #     serializer.save()
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_id):
         try:
             user = User.objects.get(pk=user_id, is_active=1)
         except User.DoesNotExist:
-            return Response(APIResponse(success=False, data={}, message="User not found").__dict__(),
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
         user.is_active = 0
         user.save()
-        return Response(APIResponse(success=True, data={}, message="User deleted successfully").__dict__(),
+        return Response(APIResponse(success=True, data={}, message="").__dict__(),
                         status=status.HTTP_204_NO_CONTENT)
 
 
@@ -472,33 +477,33 @@ class UserProfileAPIView(APIView):
             serializer.save()
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
                             status=status.HTTP_201_CREATED)
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        return Response(APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, user_profile_id):
         try:
             user_profile = UserProfile.objects.get(pk=user_profile_id, status=True)
         except UserProfile.DoesNotExist:
-            return Response(APIResponse(success=False, data={}, message="User profile not found").__dict__(),
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserProfileSerializer(user_profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data=serializer.errors, message="Validation error").__dict__(),
+        return Response(APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_profile_id):
         try:
             user_profile = UserProfile.objects.get(pk=user_profile_id, status=True)
         except UserProfile.DoesNotExist:
-            return Response(APIResponse(success=False, data={}, message="User profile not found").__dict__(),
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
         user_profile.status = False
         user_profile.save()
-        return Response(APIResponse(success=True, data={}, message="User profile deleted successfully").__dict__(),
+        return Response(APIResponse(success=True, data={}, message="").__dict__(),
                         status=status.HTTP_204_NO_CONTENT)
 
 
@@ -529,3 +534,53 @@ class BalanceTransactionsAPIView(APIView):
                     APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
         else:
             return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
+
+
+####################################### BANKING RESTAPI ##############################################################
+
+@permission_classes([IsAuthenticated])
+class BankingAPIView(APIView):
+    def get(self, request):
+        banking = Banking.objects.get(status=True)
+        serialized_data = BankingSerializer(banking).data
+        return Response(
+            APIResponse(success=True, data=serialized_data, message="").__dict__())
+
+    def put(self, request, banking_id):
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if auth_header.startswith('Bearer '):
+            token_key = auth_header[len('Bearer '):]
+            print(token_key)
+            secret_key = '!@lode@@!!123'
+            try:
+                # Decode the JWT
+                decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
+                user_id = decoded_token['user_id']
+                user = get_object_or_404(User, pk=user_id)
+                if user.is_superuser or user.is_staff:
+                    try:
+                        banking = Banking.objects.get(pk=banking_id, status=True)
+                    except Banking.DoesNotExist:
+                        return Response(
+                            APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+                    serializer = BankingSerializer(banking, data=request.data)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+                    return Response(
+                        APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    Response(
+                        APIResponse(success=False, data={}, message="Không có quyền chỉnh sửa").__dict__(),
+                        status=status.HTTP_403_FORBIDDEN)
+            except jwt.ExpiredSignatureError as ex:
+                print(str(ex))
+                return Response(
+                    APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
+        else:
+            return Response(
+                APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
+                status=status.HTTP_404_NOT_FOUND)

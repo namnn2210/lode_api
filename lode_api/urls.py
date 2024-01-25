@@ -23,5 +23,6 @@ urlpatterns = [
     path('', include('server.urls')),
     path('api/gameplay/', include('gameplay.urls')),
     path('api/', include('banks.urls')),
+    path('api/', include('notification.urls')),
     path('api/statistical/', include('statistical.urls'))
 ]

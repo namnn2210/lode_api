@@ -5,14 +5,18 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from authentication.serializers import UserSerializer
+from authentication.serializers import UserSerializer, UserProfileSerializer
+from authentication.models import UserProfile
 from gameplay.models import Order
 from server.models import BalanceTransaction, APIResponse
 from datetime import datetime, timedelta
 from django.db.models import Q
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
+@permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def get_user_statistical(request):
     try:
@@ -93,9 +97,8 @@ def get_user_statistical(request):
         user_data_list = list(user_data.values())
 
         for user_info in user_data_list:
-            user = UserSerializer(get_object_or_404(User, pk=user_info['user'])).data
-            del user['password']
-            user_info['user'] = user
+            user_profile = UserProfileSerializer(get_object_or_404(UserProfile, pk=user_info['user'])).data
+            user_info['user'] = user_profile
 
         paginator = PageNumberPagination()
         paginator.page_size = 10
@@ -103,10 +106,12 @@ def get_user_statistical(request):
 
         return Response(APIResponse(success=True, data=result_page, message="").__dict__())
     except Exception as ex:
+        print(str(ex))
         return Response(APIResponse(success=False, data={}, message="Không thể lấy dữ liệu").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
 
+@permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def get_statistical_by_date(request):
     try:

@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "corsheaders",
     'gameplay',
     'banks',
-    'statistical'
+    'statistical',
+    'notification'
 ]
 
 MIDDLEWARE = [

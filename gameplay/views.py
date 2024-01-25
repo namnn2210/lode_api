@@ -74,20 +74,16 @@ class OrderView(APIView):
     def get(self, request):
         paginator = PageNumberPagination()
         paginator.page_size = 10
-        if request.query_params.get('start_date'):
-            start_date = datetime.strptime(request.query_params.get('start_date'),
-                                           "%Y-%m-%d").date()  # Get the first parameter
+        if request.query_params.get('start_date') and request.query_params.get('end_date'):
+            start_date = datetime.strptime(request.query_params.get('start_date'),"%Y-%m-%d").date()
+            end_date = datetime.strptime(request.query_params.get('end_date'),"%Y-%m-%d").date()  # Get the second parameter
+
+            print(start_date, end_date)
+            records = Order.objects.filter(
+                Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode','user')
         else:
-            start_date = datetime.now().date()
-        if request.query_params.get('end_date'):
-            end_date = datetime.strptime(request.query_params.get('end_date'),
-                                         "%Y-%m-%d").date()  # Get the second parameter
-        else:
-            end_date = datetime.now().date() + timedelta(days=1)
-        print(start_date, end_date)
-        filtered_records = Order.objects.filter(
-            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode')
-        result_page = paginator.paginate_queryset(filtered_records, request)
+            records = Order.objects.all().select_related('city', 'mode','user')
+        result_page = paginator.paginate_queryset(records, request)
         serialized_data = OrderSerializer(result_page, many=True).data
         return Response(
             APIResponse(success=True, data=serialized_data, message="").__dict__())
