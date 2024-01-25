@@ -539,7 +539,8 @@ class BalanceTransactionsAPIView(APIView):
                 result_page = paginator.paginate_queryset(balance_transactions, request)
                 serialized_data = BalanceTransactionSerializer(result_page, many=True).data
                 for data in serialized_data:
-                    data['user'] = UserProfileSerializer(get_object_or_404(UserProfile, user_id=data['user'])).data
+                    data['user_profile'] = UserProfileSerializer(get_object_or_404(UserProfile, user_id=data['user'])).data
+                    del data['user']
                 return Response(APIResponse(success=True, data=serialized_data, message="").__dict__())
             except jwt.ExpiredSignatureError as ex:
                 print(str(ex))
