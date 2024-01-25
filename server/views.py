@@ -581,12 +581,19 @@ class BankingAPIView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
                     try:
-                        banking.bank_id = request.data.get('bank_id', 1)
-                        banking.user_name = request.data.get('user_name', '')
-                        banking.bank_number = request.data.get('bank_number', '')
-                        banking.save()
-                        serializer = BankingSerializer(banking, data=request.data)
-                        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+                        bank_id = request.data.get('bank_id', 1)
+                        bank = Bank.objects.get(pk=bank_id)
+                        if bank is None:
+                            Response(
+                                APIResponse(success=False, data={}, message="Thông tin ngân hàng không hợp lệ").__dict__(),
+                                status=status.HTTP_400_BAD_REQUEST)
+                        else:
+                            banking.bank_id = bank_id
+                            banking.user_name = request.data.get('user_name', '')
+                            banking.bank_number = request.data.get('bank_number', '')
+                            banking.save()
+                            serializer = BankingSerializer(banking, data=request.data)
+                            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
                     except Exception as ex:
                         return Response(
                             APIResponse(success=False, data=str(ex), message="Lưu thông tin thất bại").__dict__(),
