@@ -8,9 +8,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from authentication.models import UserProfile
 from .serializer import NotificationSerializer, NotificationCategorySerializer
 from .models import NotificationModel, NotificationCategoryModel
 from server.models import APIResponse
+from gameplay.serializers import UserProfileSerializer
 
 
 @permission_classes([IsAuthenticated])
@@ -55,13 +58,30 @@ class NotificationAPIView(APIView):
                 user_id = decoded_token['user_id']
                 user = get_object_or_404(User, pk=user_id)
                 if user.is_superuser or user.is_staff:
-                    serializer = NotificationSerializer(data=request.data)
-                    if serializer.is_valid():
-                        serializer.save()
-                        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-                    return Response(
-                        APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+                    try:
+                        category_id = request.data.get('category_id', 1)
+                        user_id = request.data.get('user_id', None)
+                        to_user = User.objects.get(pk=user_id)
+                        title = request.data.get('title', '')
+                        content = request.data.get('content', '')
+                        category = NotificationCategoryModel.objects.get(pk=category_id)
+                        if category:
+                            noti = NotificationModel(category=category, user=to_user, title=title, content=content)
+                            noti.save()
+                            serializer = NotificationSerializer(noti).data
+                            user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
+                            del user_profile['user']
+                            serializer['user'] = user_profile
+                            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+                        else:
+                            Response(
+                                APIResponse(success=False, data={},
+                                            message="Danh mục thông báo không hợp lệ").__dict__(),
+                                status=status.HTTP_400_BAD_REQUEST)
+                    except Exception as ex:
+                        return Response(
+                            APIResponse(success=False, data=str(ex), message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
                 else:
                     Response(
                         APIResponse(success=False, data={}, message="Không có quyền").__dict__(),
@@ -94,13 +114,33 @@ class NotificationAPIView(APIView):
                             APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
-                    serializer = NotificationSerializer(notification, data=request.data)
-                    if serializer.is_valid():
-                        serializer.save()
-                        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-                    return Response(
-                        APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+                    try:
+                        category_id = request.data.get('category_id', 1)
+                        user_id = request.data.get('user_id', None)
+                        to_user = User.objects.get(pk=user_id)
+                        title = request.data.get('title', '')
+                        content = request.data.get('content', '')
+                        category = NotificationCategoryModel.objects.get(pk=category_id)
+                        if category:
+                            notification.category = category
+                            notification.user = to_user
+                            notification.title = title
+                            notification.content = content
+                            notification.save()
+                            serializer = NotificationSerializer(notification).data
+                            user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
+                            del user_profile['user']
+                            serializer['user'] = user_profile
+                            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+                        else:
+                            Response(
+                                APIResponse(success=False, data={},
+                                            message="Danh mục thông báo không hợp lệ").__dict__(),
+                                status=status.HTTP_400_BAD_REQUEST)
+                    except Exception as ex:
+                        return Response(
+                            APIResponse(success=False, data=str(ex), message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
                 else:
                     Response(
                         APIResponse(success=False, data={}, message="Không có quyền").__dict__(),
