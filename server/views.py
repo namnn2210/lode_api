@@ -462,7 +462,7 @@ class UserAPIView(APIView):
 @permission_classes([IsAuthenticated])
 class UserProfileAPIView(APIView):
     def get(self, request):
-        user_profiles = UserProfile.objects.filter(status=True)
+        user_profiles = UserProfile.objects.filter(status=True).select_related('user')
         serializer = UserProfileSerializer(user_profiles, many=True)
         return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
 

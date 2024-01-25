@@ -44,7 +44,7 @@ def signup(request):
         return Response(APIResponse(success=False, data={}, message="Số điện thoại đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=phone, password=password, email=email, first_name=first_name)
+    user = User.objects.create_user(username=phone, password=password, email=email.lower(), first_name=first_name)
     user_profile = UserProfile(user=user, phone=phone)
     user_profile.save()
 
