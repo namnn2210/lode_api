@@ -6,11 +6,11 @@ from .serializer import SystemModelSerializer
 
 # Create your views here.
 class SystemModelListCreateView(generics.ListCreateAPIView):
-    queryset = SystemModel.objects.all(status=True)
+    queryset = SystemModel.objects.filter(status=True)
     serializer_class = SystemModelSerializer
 
 
 class SystemModelRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = SystemModel.objects.all(status=True)
+    queryset = SystemModel.objects.filter(status=True)
     serializer_class = SystemModelSerializer
     lookup_field = 'system_id'
