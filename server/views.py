@@ -592,7 +592,7 @@ class BankingAPIView(APIView):
                             banking.user_name = request.data.get('user_name', '')
                             banking.bank_number = request.data.get('bank_number', '')
                             banking.save()
-                            serializer = BankingSerializer(banking, data=request.data)
+                            serializer = BankingSerializer(banking)
                             return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
                     except Exception as ex:
                         return Response(
