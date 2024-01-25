@@ -18,7 +18,7 @@ from server.models import APIResponse
 @permission_classes([AllowAny])
 def signup(request):
     body = json.loads(request.body.decode('utf-8'))
-    first_name = body.get('first_name','')
+    first_name = body.get('first_name', '')
     password = body.get('password')
     password2 = body.get('password2')
     email = body.get('email')
@@ -84,6 +84,10 @@ def login(request):
 
     if not user.check_password(password):
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
+                        status=status.HTTP_401_UNAUTHORIZED)
+    if not user.is_active:
+        return Response(APIResponse(success=False, data={},
+                                    message="Tài khoản bị khóa. Vui lòng liên hệ để biết thêm chi tiết").__dict__(),
                         status=status.HTTP_401_UNAUTHORIZED)
 
     django_login(request, user)
