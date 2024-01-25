@@ -152,5 +152,5 @@ def get_statistical_by_date(request):
 
         return Response(APIResponse(success=True, data=return_data, message="").__dict__())
     except Exception as ex:
-        return Response(APIResponse(success=False, data={}, message="Không thể lấy dữ liệu").__dict__(),
+        return Response(APIResponse(success=False, data=str(ex), message="Không thể lấy dữ liệu").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
