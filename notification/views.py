@@ -61,11 +61,15 @@ class NotificationAPIView(APIView):
                     try:
                         category_id = request.data.get('category_id', 1)
                         user_id = request.data.get('user_id', None)
-                        to_user = User.objects.get(pk=user_id)
+
                         title = request.data.get('title', '')
                         content = request.data.get('content', '')
                         category = NotificationCategoryModel.objects.get(pk=category_id)
                         if category:
+                            if user_id:
+                                to_user = User.objects.get(pk=user_id)
+                            else:
+                                to_user = None
                             noti = NotificationModel(category=category, user=to_user, title=title, content=content)
                             noti.save()
                             serializer = NotificationSerializer(noti).data
@@ -113,15 +117,18 @@ class NotificationAPIView(APIView):
                         return Response(
                             APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
-
                     try:
                         category_id = request.data.get('category_id', 1)
                         user_id = request.data.get('user_id', None)
-                        to_user = User.objects.get(pk=user_id)
+                        # to_user = User.objects.get(pk=user_id)
                         title = request.data.get('title', '')
                         content = request.data.get('content', '')
                         category = NotificationCategoryModel.objects.get(pk=category_id)
                         if category:
+                            if user_id:
+                                to_user = User.objects.get(pk=user_id)
+                            else:
+                                to_user = None
                             notification.category = category
                             notification.user = to_user
                             notification.title = title
