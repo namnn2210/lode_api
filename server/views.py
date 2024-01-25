@@ -533,8 +533,8 @@ class BalanceTransactionsAPIView(APIView):
                 # Decode the JWT
                 decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
                 user_id = decoded_token['user_id']
-                user = get_object_or_404(User, pk=user_id)
-                balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
+                user = get_object_or_404(UserProfile, pk=user_id)
+                balance_transactions = BalanceTransaction.objects.filter(user=user.user).select_related('bank', 'user')
                 result_page = paginator.paginate_queryset(balance_transactions, request)
                 serialized_data = BalanceTransactionSerializer(result_page, many=True).data
                 return Response(APIResponse(success=True, data=serialized_data, message="").__dict__())
