@@ -487,12 +487,22 @@ class UserProfileAPIView(APIView):
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UserProfileSerializer(user_profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-        return Response(APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+        try:
+
+            request_data_balance = request.data.get("balance")
+            if int(request_data_balance) > 0:
+                user_profile.balance = request_data_balance
+                user_profile.save()
+                serializer = UserProfileSerializer(user_profile)
+                # if serializer.is_valid():
+                #     serializer.save()
+                return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+            else:
+                return Response(APIResponse(success=False, data={}, message="Số dư phải lớn hơn 0").__dict__(),
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            return Response(APIResponse(success=False, data=str(ex), message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_profile_id):
         try:
