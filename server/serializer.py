@@ -1,7 +1,4 @@
 from rest_framework import serializers
-
-from authentication.models import UserProfile
-from authentication.serializers import UserSerializer
 from .models import Game, Subgame, City, Rate, Banking, BalanceTransaction
 
 from banks.serializer import BankSerializer
@@ -39,15 +36,8 @@ class BankingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = '__all__'
-
-
 class BalanceTransactionSerializer(serializers.ModelSerializer):
     bank = BankSerializer()
-    user = UserProfileSerializer()
 
     class Meta:
         model = BalanceTransaction
