@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/gameplay/', include('gameplay.urls')),
     path('api/', include('banks.urls')),
     path('api/', include('notification.urls')),
-    path('api/statistical/', include('statistical.urls'))
+    path('api/', include('system.urls')),
+    path('api/statistical/', include('statistical.urls')),
 ]

@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'gameplay',
     'banks',
     'statistical',
-    'notification'
+    'notification',
+    'system'
 ]
 
 MIDDLEWARE = [

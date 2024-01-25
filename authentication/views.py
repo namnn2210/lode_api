@@ -55,7 +55,6 @@ def signup(request):
     user_profile_serializer = UserProfileSerializer(get_object_or_404(UserProfile, user=user)).data
     user_serializer = UserSerializer(user).data
     user_profile_serializer.update(user_serializer)
-    del user_profile_serializer['password']
 
     return Response(APIResponse(success=True, data={'access_token': access_token, 'user': user_profile_serializer},
                                 message="").__dict__(),
@@ -99,7 +98,6 @@ def login(request):
 
     user_serializer = UserSerializer(user).data
     user_profile_serializer.update(user_serializer)
-    del user_profile_serializer['password']
     print(user_profile_serializer)
 
     return Response(APIResponse(success=True, data={'access_token': access_token, 'user': user_profile_serializer},
