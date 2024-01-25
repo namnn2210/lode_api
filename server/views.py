@@ -539,7 +539,8 @@ class BalanceTransactionsAPIView(APIView):
                 result_page = paginator.paginate_queryset(balance_transactions, request)
                 serialized_data = BalanceTransactionSerializer(result_page, many=True).data
                 for data in serialized_data:
-                    data['user_profile'] = UserProfileSerializer(get_object_or_404(UserProfile, user_id=data['user'])).data
+                    data['user_profile'] = UserProfileSerializer(
+                        get_object_or_404(UserProfile, user_id=data['user'])).data
                     del data['user']
                 return Response(APIResponse(success=True, data=serialized_data, message="").__dict__())
             except jwt.ExpiredSignatureError as ex:
@@ -579,13 +580,17 @@ class BankingAPIView(APIView):
                             APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
 
-                    serializer = BankingSerializer(banking, data=request.data)
-                    if serializer.is_valid():
-                        serializer.save()
+                    try:
+                        banking.bank_id = request.data.get('bank_id', 1)
+                        banking.user_name = request.data.get('user_name', '')
+                        banking.bank_number = request.data.get('bank_number', '')
+                        banking.save()
+                        serializer = BankingSerializer(banking, data=request.data)
                         return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-                    return Response(
-                        APIResponse(success=False, data=serializer.errors, message="Lưu thông tin thất bại").__dict__(),
-                        status=status.HTTP_400_BAD_REQUEST)
+                    except Exception as ex:
+                        return Response(
+                            APIResponse(success=False, data=str(ex), message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
                 else:
                     Response(
                         APIResponse(success=False, data={}, message="Không có quyền chỉnh sửa").__dict__(),
