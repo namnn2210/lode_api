@@ -530,8 +530,8 @@ class UserProfileAPIView(APIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_profile_by_phone(request, phone):
-    user_profile = UserProfile.objects.get(phone=phone, status=True)
-    serializer = UserProfileSerializer(user_profile).data
+    user_profile = UserProfile.objects.filter(Q(phone__contains=phone) & Q(status=True))
+    serializer = UserProfileSerializer(user_profile, many=True).data
     return Response(APIResponse(success=True, data=serializer, message="").__dict__())
 
 

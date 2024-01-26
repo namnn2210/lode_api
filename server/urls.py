@@ -30,7 +30,7 @@ urlpatterns = [
 
     path('api/user_profiles', UserProfileAPIView.as_view(), name='user-profile-list'),
     path('api/user_profiles/<int:user_profile_id>', UserProfileAPIView.as_view(), name='user-profile-detail'),
-    path('api/user_profiles/<str:phone>', get_user_profile_by_phone, name='user-profile-by-phone'),
+    path('api/user_profiles/phone/<str:phone>', get_user_profile_by_phone, name='user-profile-by-phone'),
 
     path('api/balance_transaction', BalanceTransactionsAPIView.as_view(), name='balance_transactions-list'),
     path('api/balance_transaction/<int:transaction_id>', BalanceTransactionsAPIView.as_view(),
