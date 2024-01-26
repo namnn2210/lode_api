@@ -601,11 +601,17 @@ class BalanceTransactionsAPIView(APIView):
                     try:
                         transaction_status = request.data.get('status')
                         transaction_description = request.data.get('description')
-                        if transaction_status is None or transaction_status != 1 or transaction_status == 2:
+                        if transaction_status is None:
                             return Response(
                                 APIResponse(success=False, data={},
                                             message="Trạng thái giao dịch không hợp lệ").__dict__(),
                                 status=status.HTTP_400_BAD_REQUEST)
+                        else:
+                            if transaction_status not in [0, 1, 2]:
+                                return Response(
+                                    APIResponse(success=False, data={},
+                                                message="Trạng thái giao dịch không hợp lệ").__dict__(),
+                                    status=status.HTTP_400_BAD_REQUEST)
                         if transaction_status == 2 and transaction_description is None:
                             return Response(
                                 APIResponse(success=False, data={},
