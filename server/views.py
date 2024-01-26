@@ -441,14 +441,14 @@ class UserAPIView(APIView):
 
             request_data_first_name = request.data.get("first_name")
             request_data_is_active = request.data.get("is_active")
-            if request_data_first_name:
+            if request_data_first_name is not None:
                 user.first_name = request_data_first_name
                 user.save()
                 serializer = UserSerializer(user)
                 # if serializer.is_valid():
                 #     serializer.save()
                 return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
-            if request_data_is_active:
+            if request_data_is_active is not None:
                 user.is_active = request_data_is_active
                 user.save()
                 serializer = UserSerializer(user)
