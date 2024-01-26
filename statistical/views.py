@@ -130,25 +130,32 @@ def get_statistical_by_date(request):
             created_at__gte=start_date,
             created_at__lt=end_date
         ).aggregate(Sum('amount'))
-        withdraw_deposit = BalanceTransaction.objects.filter(
+        print(sum_deposit)
+        sum_withdraw = BalanceTransaction.objects.filter(
             transaction_type=2,
             status=1,
             created_at__gte=start_date,
             created_at__lt=end_date
         ).aggregate(Sum('amount'))
+        print(sum_withdraw)
         return_data['sum_deposit'] = sum_deposit['amount__sum'] if sum_deposit['amount__sum'] is not None else 0
-        return_data['withdraw_deposit'] = withdraw_deposit['amount__sum'] if withdraw_deposit[
+        return_data['withdraw_deposit'] = sum_withdraw['amount__sum'] if sum_withdraw[
                                                                                  'amount__sum'] is not None else 0
 
-        order_stats = Order.objects.filter(
+        total_win = Order.objects.filter(
             order_date__gte=start_date,
-            order_date__lt=end_date
-        ).aggregate(
-            total_win=Sum('win', filter=Q(win=True)),
-            total_lost=Sum('win', filter=Q(win=False))
-        )
-        return_data['total_win'] = order_stats['total_win'] if order_stats['total_win'] is not None else 0
-        return_data['total_lost'] = order_stats['total_lost'] if order_stats['total_lost'] is not None else 0
+            order_date__lt=end_date,
+            win=True
+        ).count()
+
+        total_lost = Order.objects.filter(
+            order_date__gte=start_date,
+            order_date__lt=end_date,
+            win=False
+        ).count()
+
+        return_data['total_win'] = total_win
+        return_data['total_lost'] = total_lost
 
         return Response(APIResponse(success=True, data=return_data, message="").__dict__())
     except Exception as ex:
