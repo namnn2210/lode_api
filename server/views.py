@@ -575,6 +575,53 @@ class BalanceTransactionsAPIView(APIView):
         else:
             return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
 
+    def put(self, request, transaction_id):
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if auth_header.startswith('Bearer '):
+            token_key = auth_header[len('Bearer '):]
+            print(token_key)
+            secret_key = '!@lode@@!!123'
+            try:
+                # Decode the JWT
+                decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
+                user_id = decoded_token['user_id']
+                user = get_object_or_404(User, pk=user_id)
+
+                if user.is_superuser or user.is_staff:
+                    # balance_transactions = BalanceTransaction.objects.all().select_related('bank')
+                    try:
+                        balance_transaction = BalanceTransaction.objects.get(pk=transaction_id, status=True)
+                    except BalanceTransaction.DoesNotExist:
+                        return Response(
+                            APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+                    try:
+                        transaction_status = request.data.get('status')
+                        transaction_description = request.data.get('description')
+                        balance_transaction.status = transaction_status
+                        balance_transaction.description = transaction_description
+                        balance_transaction.save()
+                        serializer = BankingSerializer(balance_transaction)
+                        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+                    except Exception as ex:
+                        return Response(
+                            APIResponse(success=False, data=str(ex), message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    Response(
+                        APIResponse(success=False, data={}, message="Không có quyền chỉnh sửa").__dict__(),
+                        status=status.HTTP_403_FORBIDDEN)
+            except jwt.ExpiredSignatureError as ex:
+                print(str(ex))
+                return Response(
+                    APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
+        else:
+            return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
+
+
 
 ####################################### BANKING RESTAPI ##############################################################
 
