@@ -60,25 +60,39 @@ class NotificationAPIView(APIView):
                 if user.is_superuser or user.is_staff:
                     try:
                         category_id = request.data.get('category_id', 1)
-                        user_id = request.data.get('user_id', None)
-
+                        user_ids = request.data.get('user_id', [])
                         title = request.data.get('title', '')
                         content = request.data.get('content', '')
                         category = NotificationCategoryModel.objects.get(pk=category_id)
+                        list_noti_saved = []
                         if category:
-                            if user_id:
-                                to_user = User.objects.get(pk=user_id)
+                            if len(user_ids) > 0:
+                                for user_id in user_ids:
+                                    if user_id:
+                                        to_user = User.objects.get(pk=user_id)
+                                    else:
+                                        to_user = None
+                                    noti = NotificationModel(category=category, user=to_user, title=title,
+                                                             content=content)
+                                    noti.save()
+                                    serializer = NotificationSerializer(noti).data
+                                    if user_id:
+                                        user_profile = UserProfileSerializer(
+                                            UserProfile.objects.get(user_id=user_id)).data
+                                        del user_profile['user']
+                                        serializer['user'] = user_profile
+                                    list_noti_saved.append(serializer)
                             else:
-                                to_user = None
-                            noti = NotificationModel(category=category, user=to_user, title=title, content=content)
-                            noti.save()
-                            serializer = NotificationSerializer(noti).data
-                            if user_id:
-                                user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
-                                del user_profile['user']
-                                serializer['user'] = user_profile
+                                noti = NotificationModel(category=category, user=None, title=title, content=content)
+                                noti.save()
+                                serializer = NotificationSerializer(noti).data
+                                if user_id:
+                                    user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
+                                    del user_profile['user']
+                                    serializer['user'] = user_profile
+                                list_noti_saved.append(serializer)
 
-                            return Response(APIResponse(success=True, data=serializer, message="").__dict__())
+                            return Response(APIResponse(success=True, data=list_noti_saved, message="").__dict__())
                         else:
                             Response(
                                 APIResponse(success=False, data={},
