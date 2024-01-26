@@ -13,4 +13,4 @@ class SystemModelListCreateView(generics.ListCreateAPIView):
 class SystemModelRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = SystemModel.objects.filter(status=True)
     serializer_class = SystemModelSerializer
-    lookup_field = 'system_id'
+    lookup_field = 'id'
