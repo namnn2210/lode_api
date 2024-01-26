@@ -98,7 +98,7 @@ def get_user_statistical(request):
 
         for user_info in user_data_list:
             user_profile = UserProfileSerializer(get_object_or_404(UserProfile, pk=user_info['user'])).data
-            user_info['user'] = user_profile
+            user_info['user_profile'] = user_profile
 
         paginator = PageNumberPagination()
         paginator.page_size = 10
