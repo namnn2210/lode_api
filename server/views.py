@@ -527,6 +527,7 @@ class UserProfileAPIView(APIView):
                         status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_profile_by_phone(request, phone):
     user_profile = UserProfile.objects.get(phone=phone, status=True)
