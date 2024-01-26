@@ -16,7 +16,7 @@ from server.models import APIResponse
 from gameplay.serializers import UserProfileSerializer
 
 
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 # Create your views here.
 class NotificationAPIView(APIView):
     def get(self, request):
@@ -66,7 +66,7 @@ class NotificationAPIView(APIView):
                         list_noti_saved = []
                         if category_id:
                             category = NotificationCategoryModel.objects.get(pk=category_id)
-                            if len(user_ids) > 0:
+                            if user_ids and len(user_ids) > 0:
                                 for user_id in user_ids:
                                     if user_id:
                                         to_user = User.objects.get(pk=user_id)
