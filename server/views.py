@@ -531,7 +531,7 @@ class UserProfileAPIView(APIView):
 def get_user_profile_by_phone(request, phone):
     user_profile = UserProfile.objects.get(phone=phone, status=True)
     serializer = UserProfileSerializer(user_profile).data
-    return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+    return Response(APIResponse(success=True, data=serializer, message="").__dict__())
 
 
 ####################################### BALANCE TRANSACTIONS RESTAPI ##############################################################
