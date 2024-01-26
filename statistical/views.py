@@ -115,27 +115,32 @@ def get_user_statistical(request):
 @api_view(['GET'])
 def get_statistical_by_date(request):
     try:
-        date = request.query_params.get('date', None)
-        if date:
-            start_date = datetime.strptime(date,
+        start_date = request.query_params.get('start_date', None)
+        end_date = request.query_params.get('end_date', None)
+        if start_date:
+            start_date = datetime.strptime(start_date,
                                            "%Y-%m-%d").date()  # Get the first parameter
         else:
             start_date = datetime.now().date()
-        end_date = start_date + timedelta(days=1)
+        if end_date:
+            end_date = datetime.strptime(end_date,
+                                           "%Y-%m-%d").date()  # Get the first parameter
+        else:
+            end_date = start_date + timedelta(days=1)
         return_data = {'date': start_date.strftime("%Y-%m-%d")}
         print(return_data)
         sum_deposit = BalanceTransaction.objects.filter(
             transaction_type=1,
             status=1,
             created_at__gte=start_date,
-            created_at__lt=end_date
+            created_at__lte=end_date
         ).aggregate(Sum('amount'))
         print(sum_deposit)
         sum_withdraw = BalanceTransaction.objects.filter(
             transaction_type=2,
             status=1,
             created_at__gte=start_date,
-            created_at__lt=end_date
+            created_at__lte=end_date
         ).aggregate(Sum('amount'))
         print(sum_withdraw)
         return_data['sum_deposit'] = sum_deposit['amount__sum'] if sum_deposit['amount__sum'] is not None else 0
@@ -144,13 +149,13 @@ def get_statistical_by_date(request):
 
         total_win = Order.objects.filter(
             order_date__gte=start_date,
-            order_date__lt=end_date,
+            order_date__lte=end_date,
             win=True
         ).count()
 
         total_lost = Order.objects.filter(
             order_date__gte=start_date,
-            order_date__lt=end_date,
+            order_date__lte=end_date,
             win=False
         ).count()
 
