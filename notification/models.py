@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class NotificationCategoryModel(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

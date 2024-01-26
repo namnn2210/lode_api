@@ -180,4 +180,41 @@ class NotificationAPIView(APIView):
 # Create your views here.
 class NotificationCategoryAPIView(APIView):
     def get(self, request):
-        pass
+        categories = NotificationCategoryModel.objects.all()
+        serializer = NotificationCategorySerializer(categories, many=True).data
+        return Response(APIResponse(success=True, data=serializer, message="").__dict__())
+
+    def post(self, request):
+        serializer = NotificationCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__(),
+                            status=status.HTTP_201_CREATED)
+        else:
+            return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, cat_id):
+        try:
+            game = NotificationCategoryModel.objects.get(pk=cat_id, status=True)
+        except NotificationCategoryModel.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = NotificationCategorySerializer(game, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        else:
+            return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, cat_id):
+        try:
+            game = NotificationCategoryModel.objects.get(pk=cat_id, status=True)
+        except NotificationCategoryModel.DoesNotExist:
+            return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        game.status = False
+        game.save()
+        return Response(APIResponse(success=True, data={}, message="Xóa thành công").__dict__())
