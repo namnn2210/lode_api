@@ -528,7 +528,7 @@ class UserProfileAPIView(APIView):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_user_profile_by_phone(request):
     phone = request.GET.get('phone', None)
     if phone:
