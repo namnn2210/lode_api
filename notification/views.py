@@ -59,7 +59,7 @@ class NotificationAPIView(APIView):
                 user = get_object_or_404(User, pk=user_id)
                 if user.is_superuser or user.is_staff:
                     try:
-                        category_id = request.data.get('category_id', 1)
+                        category_id = request.data.get('category_id', None)
                         user_ids = request.data.get('user_id', [])
                         title = request.data.get('title', '')
                         content = request.data.get('content', '')
