@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import fetch_games, fetch_rates, get_games, get_banking, get_rates, get_cities, get_result, deposit, \
-    withdraw
+    withdraw, get_user_profile_by_phone
 from .views import SubgameAPIView, GameAPIView, UserAPIView, UserProfileAPIView, BalanceTransactionsAPIView, \
     BankingAPIView
 
@@ -24,11 +24,13 @@ urlpatterns = [
     path('api/users', UserAPIView.as_view(), name='user-list'),
     path('api/users/<int:user_id>', UserAPIView.as_view(), name='user-detail'),
 
+
     path('api/users', UserAPIView.as_view(), name='user-list'),
     path('api/users/<int:user_id>', UserAPIView.as_view(), name='user-detail'),
 
     path('api/user_profiles', UserProfileAPIView.as_view(), name='user-profile-list'),
     path('api/user_profiles/<int:user_profile_id>', UserProfileAPIView.as_view(), name='user-profile-detail'),
+    path('api/user_profiles/<str:phone>', get_user_profile_by_phone, name='user-profile-by-phone'),
 
     path('api/balance_transaction', BalanceTransactionsAPIView.as_view(), name='balance_transactions-list'),
     path('api/balance_transaction/<int:transaction_id>', BalanceTransactionsAPIView.as_view(),

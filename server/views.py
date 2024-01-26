@@ -414,7 +414,7 @@ class SubgameAPIView(APIView):
 
 
 ####################################### USER RESTAPI ##############################################################
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 class UserAPIView(APIView):
     def get(self, request):
         users = User.objects.all()
@@ -527,6 +527,13 @@ class UserProfileAPIView(APIView):
                         status=status.HTTP_204_NO_CONTENT)
 
 
+@permission_classes([IsAuthenticated])
+def get_user_profile_by_phone(request, phone):
+    user_profile = UserProfile.objects.get(phone=phone, status=True)
+    serializer = UserProfileSerializer(user_profile).data
+    return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+
+
 ####################################### BALANCE TRANSACTIONS RESTAPI ##############################################################
 @permission_classes([IsAuthenticated])
 class BalanceTransactionsAPIView(APIView):
@@ -598,7 +605,8 @@ class BankingAPIView(APIView):
                         bank = Bank.objects.get(pk=bank_id)
                         if bank is None:
                             Response(
-                                APIResponse(success=False, data={}, message="Thông tin ngân hàng không hợp lệ").__dict__(),
+                                APIResponse(success=False, data={},
+                                            message="Thông tin ngân hàng không hợp lệ").__dict__(),
                                 status=status.HTTP_400_BAD_REQUEST)
                         else:
                             banking.bank_id = bank_id
