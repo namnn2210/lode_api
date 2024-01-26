@@ -601,9 +601,15 @@ class BalanceTransactionsAPIView(APIView):
                     try:
                         transaction_status = request.data.get('status')
                         transaction_description = request.data.get('description')
-                        if transaction_status is None:
+                        if transaction_status is None or transaction_status != 1 or transaction_status == 2:
                             return Response(
-                                APIResponse(success=False, data={}, message="Trạng thái giao dịch không hợp lệ").__dict__(),
+                                APIResponse(success=False, data={},
+                                            message="Trạng thái giao dịch không hợp lệ").__dict__(),
+                                status=status.HTTP_400_BAD_REQUEST)
+                        if transaction_status == 2 and transaction_description is None:
+                            return Response(
+                                APIResponse(success=False, data={},
+                                            message="Thiếu lí do hủy").__dict__(),
                                 status=status.HTTP_400_BAD_REQUEST)
                         balance_transaction.status = transaction_status
                         balance_transaction.description = transaction_description
@@ -624,7 +630,6 @@ class BalanceTransactionsAPIView(APIView):
                     APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
         else:
             return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
-
 
 
 ####################################### BANKING RESTAPI ##############################################################
