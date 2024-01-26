@@ -545,7 +545,10 @@ class BalanceTransactionsAPIView(APIView):
                 user_id = decoded_token['user_id']
                 user = get_object_or_404(User, pk=user_id)
 
-                balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
+                if user.is_superuser or user.is_staff:
+                    balance_transactions = BalanceTransaction.objects.all().select_related('bank')
+                else:
+                    balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
                 result_page = paginator.paginate_queryset(balance_transactions, request)
                 serialized_data = BalanceTransactionSerializer(result_page, many=True).data
                 for data in serialized_data:
