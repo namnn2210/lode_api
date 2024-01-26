@@ -438,13 +438,23 @@ class UserAPIView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         try:
+
             request_data_first_name = request.data.get("first_name")
-            user.first_name = request_data_first_name
-            user.save()
-            serializer = UserSerializer(user)
-            # if serializer.is_valid():
-            #     serializer.save()
-            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+            request_data_is_active = request.data.get("is_active")
+            if request_data_first_name:
+                user.first_name = request_data_first_name
+                user.save()
+                serializer = UserSerializer(user)
+                # if serializer.is_valid():
+                #     serializer.save()
+                return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+            if request_data_is_active:
+                user.is_active = request_data_is_active
+                user.save()
+                serializer = UserSerializer(user)
+                # if serializer.is_valid():
+                #     serializer.save()
+                return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
         except Exception:
             return Response(APIResponse(success=False, data={}, message="Lưu thông tin thất bại").__dict__(),
                             status=status.HTTP_400_BAD_REQUEST)
