@@ -417,7 +417,7 @@ class SubgameAPIView(APIView):
 # @permission_classes([IsAuthenticated])
 class UserAPIView(APIView):
     def get(self, request):
-        users = User.objects.filter(is_active=1)
+        users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
 
@@ -432,7 +432,7 @@ class UserAPIView(APIView):
 
     def put(self, request, user_id):
         try:
-            user = User.objects.get(pk=user_id, is_active=1)
+            user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
@@ -461,7 +461,7 @@ class UserAPIView(APIView):
 
     def delete(self, request, user_id):
         try:
-            user = User.objects.get(pk=user_id, is_active=1)
+            user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return Response(APIResponse(success=False, data={}, message="Dữ liệu không tồn tại").__dict__(),
                             status=status.HTTP_404_NOT_FOUND)
