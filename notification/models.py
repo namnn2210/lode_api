@@ -22,7 +22,7 @@ class NotificationModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.TextField(max_length=255)
     content = models.TextField(max_length=500)
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
