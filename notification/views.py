@@ -73,10 +73,12 @@ class NotificationAPIView(APIView):
                             noti = NotificationModel(category=category, user=to_user, title=title, content=content)
                             noti.save()
                             serializer = NotificationSerializer(noti).data
-                            user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
-                            del user_profile['user']
-                            serializer['user'] = user_profile
-                            return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+                            if user_id:
+                                user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
+                                del user_profile['user']
+                                serializer['user'] = user_profile
+
+                            return Response(APIResponse(success=True, data=serializer, message="").__dict__())
                         else:
                             Response(
                                 APIResponse(success=False, data={},
