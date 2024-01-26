@@ -16,7 +16,7 @@ class Order(models.Model):
     win = models.BooleanField(null=False, default=False)
     result = models.TextField(null=False, default="")
     note = models.TextField()
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -61,6 +61,12 @@ class OrderView(APIView):
             elif today_date > order_date_obj:
                 order_date_obj = today_date
 
+            # Kiem tra da post do so luong number len chua
+            numbers= body['numbers']
+            if mode.max_number != 0:
+                if len(numbers) > mode.max_number:
+                    return Response(APIResponse(success=False, data={}, message="Thành phố và chế độ chơi không hợp lệ").__dict__())
+
             order = Order(user=user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
                           numbers=body['numbers'],
                           pay_number=pay_number, total=total)

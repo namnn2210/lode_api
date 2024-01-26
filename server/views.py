@@ -540,7 +540,7 @@ def get_user_profile_by_phone(request):
 
 
 ####################################### BALANCE TRANSACTIONS RESTAPI ##############################################################
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class BalanceTransactionsAPIView(APIView):
 
     def get(self, request):
@@ -592,7 +592,7 @@ class BalanceTransactionsAPIView(APIView):
                 if user.is_superuser or user.is_staff:
                     # balance_transactions = BalanceTransaction.objects.all().select_related('bank')
                     try:
-                        balance_transaction = BalanceTransaction.objects.get(pk=transaction_id, status=True)
+                        balance_transaction = BalanceTransaction.objects.get(pk=transaction_id, status=0)
                     except BalanceTransaction.DoesNotExist:
                         return Response(
                             APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
