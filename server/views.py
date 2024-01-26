@@ -528,11 +528,15 @@ class UserProfileAPIView(APIView):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_profile_by_phone(request, phone):
-    user_profile = UserProfile.objects.filter(Q(phone__contains=phone) & Q(status=True))
-    serializer = UserProfileSerializer(user_profile, many=True).data
-    return Response(APIResponse(success=True, data=serializer, message="").__dict__())
+# @permission_classes([IsAuthenticated])
+def get_user_profile_by_phone(request):
+    phone = request.GET.get('phone', None)
+    if phone:
+        user_profile = UserProfile.objects.filter(Q(phone__contains=phone) & Q(status=True))
+        serializer = UserProfileSerializer(user_profile, many=True).data
+        return Response(APIResponse(success=True, data=serializer, message="").__dict__())
+    else:
+        return Response(APIResponse(success=True, data=[], message="").__dict__())
 
 
 ####################################### BALANCE TRANSACTIONS RESTAPI ##############################################################
