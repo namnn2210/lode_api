@@ -118,13 +118,11 @@ def get_statistical_by_date(request):
         start_date = request.query_params.get('start_date', None)
         end_date = request.query_params.get('end_date', None)
         if start_date:
-            start_date = datetime.strptime(start_date,
-                                           "%Y-%m-%d").date()  # Get the first parameter
+            start_date = datetime.fromisoformat(start_date.rstrip("Z")).date()  # Get the first parameter
         else:
             start_date = datetime.now().date()
         if end_date:
-            end_date = datetime.strptime(end_date,
-                                           "%Y-%m-%d").date()  # Get the first parameter
+            end_date = datetime.fromisoformat(end_date.rstrip("Z")).date()  # Get the first parameter
         else:
             end_date = start_date + timedelta(days=1)
         return_data = {'date': start_date.strftime("%Y-%m-%d")}
@@ -145,7 +143,7 @@ def get_statistical_by_date(request):
         print(sum_withdraw)
         return_data['sum_deposit'] = sum_deposit['amount__sum'] if sum_deposit['amount__sum'] is not None else 0
         return_data['withdraw_deposit'] = sum_withdraw['amount__sum'] if sum_withdraw[
-                                                                                 'amount__sum'] is not None else 0
+                                                                             'amount__sum'] is not None else 0
 
         total_win = Order.objects.filter(
             order_date__gte=start_date,
