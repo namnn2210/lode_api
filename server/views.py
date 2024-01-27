@@ -269,7 +269,7 @@ def withdraw(request):
     body = json.loads(request.body.decode('utf-8'))
     user = get_object_or_404(User, pk=body['user_id'])
     user_profile = get_object_or_404(UserProfile, user=user)
-    amount = body['amount']
+    amount = body['amount'] * 1000
     bank_id = body['bank_id']
     user_name = body['user_name']
     bank_number = body['bank_number']
