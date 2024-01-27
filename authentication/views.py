@@ -43,12 +43,10 @@ def signup(request):
     except User.DoesNotExist:
         pass
     print('step3')
-    try:
-        UserProfile.objects.get(phone=phone)
+    if UserProfile.objects.filter(phone=phone).exists():
         return Response(APIResponse(success=False, data={}, message="Số điện thoại đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
-    except UserProfile.DoesNotExist:
-        pass
+
     print('step4')
     user = User.objects.create_user(username=phone, password=password, email=email.lower(), first_name=first_name)
     user_profile = UserProfile(user=user, phone=phone)
