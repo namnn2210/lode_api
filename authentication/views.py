@@ -69,17 +69,17 @@ def login(request):
     phone = body['phone']
     password = body['password']
 
-    user_profile = UserProfile.objects.get(phone=phone)
-
     if not phone or not password:
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user = user_profile.user
+    user_profile = UserProfile.objects.get(phone=phone)
 
-    if user is None or user_profile:
+    if user_profile is None:
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
                         status=status.HTTP_401_UNAUTHORIZED)
+
+    user = user_profile.user
 
     if not user.check_password(password):
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
