@@ -516,6 +516,19 @@ class UserProfileAPIView(APIView):
 
             request_data_balance = request.data.get("balance")
             if int(request_data_balance) > 0:
+
+                # Tao giao dich ao trong db de tracking thong ke
+                if request_data_balance > user_profile.balance:
+                    remaining_amount = request_data_balance - user_profile.balance
+                    deposit_transaction = BalanceTransaction(user=user_profile.user, amount=remaining_amount,
+                                                             transaction_type=1, status=1)
+                    deposit_transaction.save()
+                if request_data_balance < user_profile.balance:
+                    remaining_amount = user_profile.balance - request_data_balance
+                    withdraw_transaction = BalanceTransaction(user=user_profile.user, amount=remaining_amount,
+                                                              transaction_type=2, status=1)
+                    withdraw_transaction.save()
+
                 user_profile.balance = request_data_balance
                 user_profile.save()
                 serializer = UserProfileSerializer(user_profile)
