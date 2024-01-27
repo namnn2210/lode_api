@@ -15,6 +15,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from django.db.models import Count
 import json
+import jwt
 
 
 @permission_classes([IsAuthenticated])
@@ -83,26 +84,57 @@ class OrderView(APIView):
                 APIResponse(success=False, data={}, message="Thành phố và chế độ chơi không hợp lệ").__dict__())
 
     def get(self, request):
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
-        if request.query_params.get('start_date') and request.query_params.get('end_date'):
-            start_date = datetime.strptime(request.query_params.get('start_date'), "%Y-%m-%d").date()
-            end_date = datetime.strptime(request.query_params.get('end_date'),
-                                         "%Y-%m-%d").date()  # Get the second parameter
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if auth_header.startswith('Bearer '):
+            token_key = auth_header[len('Bearer '):]
+            print(token_key)
+            secret_key = '!@lode@@!!123'
+            try:
+                # Decode the JWT
+                decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
+                user_id = decoded_token['user_id']
+                user = get_object_or_404(User, pk=user_id)
+                paginator = PageNumberPagination()
+                paginator.page_size = 10
+                if user.is_superuser or user.is_staff:
+                    if request.query_params.get('start_date') and request.query_params.get('end_date'):
+                        start_date = datetime.strptime(request.query_params.get('start_date'), "%Y-%m-%d").date()
+                        end_date = datetime.strptime(request.query_params.get('end_date'),
+                                                     "%Y-%m-%d").date()  # Get the second parameter
 
-            print(start_date, end_date)
-            records = Order.objects.filter(
-                Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode', 'user')
+                        print(start_date, end_date)
+                        records = Order.objects.filter(
+                            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode',
+                                                                                                        'user')
+                    else:
+                        records = Order.objects.all().select_related('city', 'mode', 'user')
+                    result_page = paginator.paginate_queryset(records, request)
+                    serialized_data = OrderSerializer(result_page, many=True).data
+                    for data in serialized_data:
+                        data['user_profile'] = UserProfileSerializer(
+                            get_object_or_404(UserProfile, user_id=data['user']['id'])).data
+                        del data['user']
+                    return Response(
+                        APIResponse(success=True, data=serialized_data, message="").__dict__())
+                else:
+                    records = Order.objects.filter(
+                        user=user).select_related('city', 'mode', 'user')
+                    result_page = paginator.paginate_queryset(records, request)
+                    serialized_data = OrderSerializer(result_page, many=True).data
+                    for data in serialized_data:
+                        data['user_profile'] = UserProfileSerializer(
+                            get_object_or_404(UserProfile, user_id=data['user']['id'])).data
+                        del data['user']
+                    return Response(
+                        APIResponse(success=True, data=serialized_data, message="").__dict__())
+            except jwt.ExpiredSignatureError as ex:
+                print(str(ex))
+                return Response(
+                    APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
         else:
-            records = Order.objects.all().select_related('city', 'mode', 'user')
-        result_page = paginator.paginate_queryset(records, request)
-        serialized_data = OrderSerializer(result_page, many=True).data
-        for data in serialized_data:
-            data['user_profile'] = UserProfileSerializer(
-                get_object_or_404(UserProfile, user_id=data['user']['id'])).data
-            del data['user']
-        return Response(
-            APIResponse(success=True, data=serialized_data, message="").__dict__())
+            return Response(
+                APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
+                status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, order_id):
         try:
