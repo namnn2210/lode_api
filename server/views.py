@@ -6,6 +6,7 @@ from authentication.serializers import UserSerializer, UserProfileSerializer
 from .models import City, Game, Subgame, Rate, Banking
 from server.models import APIResponse
 from gameplay.models import Order, BalanceTransaction
+from notification.models import NotificationModel
 from banks.models import Bank
 from datetime import datetime
 from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateSerializer, BankingSerializer, \
@@ -236,6 +237,13 @@ def deposit(request):
                                                      bank_number=banking.bank_number,
                                                      amount=body['transferAmount'], description=body['content'])
             deposit_transaction.save()
+
+            # Add notification
+            notification = NotificationModel(category_id=1, title='Nạp tiền thành công',
+                                             content='Quý khách đã nạp thành công {} VNĐ với mã giao dịch {}'.format(
+                                                 body['transferAmount'], body['content']), user=user_profile.user)
+            notification.save()
+
             deposit_transaction_serializer = BalanceTransactionSerializer(deposit_transaction).data
             return Response(APIResponse(success=True, data=deposit_transaction_serializer, message="").__dict__())
         else:
@@ -620,7 +628,17 @@ class BalanceTransactionsAPIView(APIView):
                         balance_transaction.status = transaction_status
                         balance_transaction.description = transaction_description
                         balance_transaction.save()
+
+                        # Add notification
+
+                        if transaction_status == 2:
+                            notification = NotificationModel(category_id=3, title='Rút tiền không thành công',
+                                                             content='Lệnh rút tiền đã bị từ chối. Vui lòng vào chi tiết giao dịch để xem lí do hoặc liên hệ chúng tôi',
+                                                             user=balance_transaction.user)
+                            notification.save()
+
                         serializer = BankingSerializer(balance_transaction)
+
                         return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
                     except Exception as ex:
                         return Response(
