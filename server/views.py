@@ -291,7 +291,7 @@ def withdraw(request):
     for deposit in deposits:
         total_amount_deposit += deposit.amount
     print('total_amount_deposit', total_amount_deposit)
-    if (total_amount_order < total_amount_deposit):
+    if (total_amount_order < total_amount_deposit) or total_amount_order == 0:
         return Response(
             APIResponse(success=False, data={},
                         message="Tổng số tiền đặt cược ít hơn tổng số tiền đã nạp vào").__dict__())
