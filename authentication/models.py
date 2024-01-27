@@ -49,4 +49,6 @@ def update_balance_order(sender, instance, **kwargs):
     if instance.status == 0:
         # Assuming you have a Banking object for the user
         user_profile.balance -= instance.total
+        if user_profile.balance < 0:
+            user_profile.balance = 0
         user_profile.save()

@@ -18,7 +18,7 @@ import json
 import jwt
 
 
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class OrderView(APIView):
     def post(self, request):
         body = json.loads(request.body.decode('utf-8'))
@@ -26,7 +26,7 @@ class OrderView(APIView):
         city = get_object_or_404(City, pk=body['city_id'])
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
         user_profile = get_object_or_404(UserProfile, user=user)
-        bet_amount = body['order_amount']
+        bet_amount = body['bet_amount']
         if bet_amount < 1000:
             return Response(APIResponse(success=False, data={}, message="Tiền cược phải từ 1000 VNĐ").__dict__())
         pay_number = bet_amount * mode.pay_number * len(body['numbers'])
@@ -66,6 +66,10 @@ class OrderView(APIView):
 
             # Kiem tra da post do so luong number len chua
             numbers = body['numbers']
+            for number in numbers:
+                if int(number) > mode.max:
+                    return Response(APIResponse(success=False, data={},
+                                                message="Số chọn không hợp lệ").__dict__())
             if mode.max_number != 0:
                 if len(numbers) != mode.max_number:
                     return Response(APIResponse(success=False, data={},
