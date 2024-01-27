@@ -73,11 +73,11 @@ def login(request):
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user_profile = UserProfile.objects.get(phone=phone)
-
-    if user_profile is None:
+    try:
+        user_profile = UserProfile.objects.get(phone=phone)
+    except UserProfile.DoesNotExist:
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
-                        status=status.HTTP_401_UNAUTHORIZED)
+                        status=status.HTTP_404_NOT_FOUND)
 
     user = user_profile.user
 
