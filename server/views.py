@@ -274,6 +274,10 @@ def withdraw(request):
     user_name = body['user_name']
     bank_number = body['bank_number']
     bank = get_object_or_404(Bank, pk=bank_id)
+
+    if amount < 200000:
+        return Response(
+            APIResponse(success=False, data={}, message="Số tiền rút tối thiểu là 200.000 VNĐ").__dict__())
     if int(amount) > user_profile.balance:
         return Response(
             APIResponse(success=False, data={}, message="Số dư không đủ").__dict__())

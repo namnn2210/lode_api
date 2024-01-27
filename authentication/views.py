@@ -34,15 +34,24 @@ def signup(request):
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(username=phone).exists():
+    try:
+        User.objects.get(username=phone)
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
-    if User.objects.filter(email=email).exists():
+    except User.DoesNotExist:
+        pass
+    try:
+        User.objects.get(email=email)
         return Response(APIResponse(success=False, data={}, message="Email đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
-    if UserProfile.objects.filter(phone=phone).exists():
+    except User.DoesNotExist:
+        pass
+    try:
+        UserProfile.objects.get(phone=phone)
         return Response(APIResponse(success=False, data={}, message="Số điện thoại đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
+    except UserProfile.DoesNotExist:
+        pass
 
     user = User.objects.create_user(username=phone, password=password, email=email.lower(), first_name=first_name)
     user_profile = UserProfile(user=user, phone=phone)
