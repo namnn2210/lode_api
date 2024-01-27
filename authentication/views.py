@@ -77,7 +77,7 @@ def login(request):
 
     user = user_profile.user
 
-    if user is None:
+    if user is None or user_profile:
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
                         status=status.HTTP_401_UNAUTHORIZED)
 
