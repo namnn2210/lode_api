@@ -277,18 +277,20 @@ def withdraw(request):
     if int(amount) > user_profile.balance:
         return Response(
             APIResponse(success=False, data={}, message="Số dư không đủ").__dict__())
+    print('amount withdraw', amount)
+
     # Get all orders
     orders = Order.objects.filter(user=user)
     total_amount_order = 0
     for order in orders:
-        total_amount_order += order.total
+        total_amount_order += order.pay_number
     # Get all deposit
     deposits = BalanceTransaction.objects.filter(user=user, transaction_type=1, status=1)
     total_amount_deposit = 0
     for deposit in deposits:
         total_amount_deposit += deposit.amount
 
-    if total_amount_order < total_amount_deposit:
+    if (total_amount_order < total_amount_deposit) or (amount < total_amount_order):
         return Response(
             APIResponse(success=False, data={},
                         message="Tổng số tiền đặt cược ít hơn tổng số tiền đã nạp vào").__dict__())
