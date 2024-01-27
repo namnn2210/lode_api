@@ -40,9 +40,9 @@ class OrderView(APIView):
         total_deposit = 0
         for transaction in balance_transactions:
             total_deposit += transaction.amount
-        if total_deposit < 100000:
-            return Response(APIResponse(success=False, data={},
-                                        message="Không thể đặt cược nếu chưa nạp đủ 100.000 VND").__dict__())
+        # if total_deposit < 100000:
+        #     return Response(APIResponse(success=False, data={},
+        #                                 message="Không thể đặt cược nếu chưa nạp đủ 100.000 VND").__dict__())
 
         time_release = city.time_release
         time_release_object = datetime.strptime(time_release, "%H:%M:%S").time()

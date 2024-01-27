@@ -22,7 +22,7 @@ class SystemModelRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     lookup_field = 'id'
 
 
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class SystemAPIView(APIView):
     def get(self, request):
         try:
