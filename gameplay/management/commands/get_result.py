@@ -269,8 +269,8 @@ class Command(BaseCommand):
             print('weekday', weekday)
             current_date = current_datetime.date()
             print('current_date', current_date)
-            # current_date_str = current_date.strftime("%Y-%m-%d")
-            current_date_str = '2024-01-23'
+            current_date_str = current_date.strftime("%Y-%m-%d")
+            # current_date_str = '2024-01-23'
 
             # get cities equal weekday
             cities = City.objects.filter((Q(date__contains=str(weekday)) | Q(date='')) & Q(region=region))
