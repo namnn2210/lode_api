@@ -298,7 +298,7 @@ class Command(BaseCommand):
                         order.save()
 
                         user_profile = UserProfile.objects.get(user=order.user)
-                        user_profile.balance += order.pay_number * total_number_won
+                        user_profile.balance += order.bet_amount * order.mode.rate * total_number_won
                         print('user {} has won {}'.format(user_profile.phone, order.pay_number * total_number_won))
                         user_profile.save()
                     else:

@@ -11,6 +11,7 @@ class Order(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=False)
     mode = models.ForeignKey(Subgame, on_delete=models.CASCADE, null=False)
     numbers = models.JSONField()
+    bet_amount = models.IntegerField(default=1000)
     pay_number = models.BigIntegerField(null=False, default=1000)
     total = models.BigIntegerField(null=False, default=1000)
     win = models.BooleanField(null=False, default=False)

@@ -26,20 +26,22 @@ class OrderView(APIView):
         city = get_object_or_404(City, pk=body['city_id'])
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
         user_profile = get_object_or_404(UserProfile, user=user)
+        bet_amount = body['order_amount']
+        if bet_amount < 1000:
+            return Response(APIResponse(success=False, data={}, message="Tiền cược phải từ 1000 VNĐ").__dict__())
+        pay_number = bet_amount * mode.pay_number * len(body['numbers'])
 
-        pay_number = mode.pay_number * 1000
-        len_number = len(body['numbers'])
-        total = pay_number * len_number
+        total = bet_amount * mode.rate * len(body['numbers'])
 
         # Check du so du trong tai khoan hay khong
-        if total > user_profile.balance:
+        if pay_number > user_profile.balance:
             return Response(APIResponse(success=False, data={}, message="Không đủ số dư trong tài khoản").__dict__())
 
         # Check da nap du 100k hay khong
-        balance_transactions = BalanceTransaction.objects.filter(user=user, transaction_type=1, status=1)
-        total_deposit = 0
-        for transaction in balance_transactions:
-            total_deposit += transaction.amount
+        # balance_transactions = BalanceTransaction.objects.filter(user=user, transaction_type=1, status=1)
+        # total_deposit = 0
+        # for transaction in balance_transactions:
+        #     total_deposit += transaction.amount
         # if total_deposit < 100000:
         #     return Response(APIResponse(success=False, data={},
         #                                 message="Không thể đặt cược nếu chưa nạp đủ 100.000 VND").__dict__())
