@@ -14,6 +14,15 @@ from gameplay.serializers import UserProfileSerializer
 from server.models import APIResponse
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
@@ -24,33 +33,33 @@ def signup(request):
     email = body.get('email')
     phone = body.get('phone')
 
-    print(phone, password)
-
+    print('Checking match password')
     if password != password2:
         return Response(APIResponse(success=False, data={}, message="Mật khẩu không trùng khớp").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    print('step1')
+    print('Checking enough info')
 
     if not phone or not password:
         return Response(APIResponse(success=False, data={}, message="Tên đăng nhập và mật khẩu là bắt buộc").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
-    print('step2')
+
+    print('Checking duplicate email')
+
     try:
         User.objects.get(email=email)
         return Response(APIResponse(success=False, data={}, message="Email đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
     except User.DoesNotExist:
         pass
-    print('step3')
-    print(UserProfile.objects.filter(phone=phone).exists())
+
+    print('Checking duplicate phone')
     if UserProfile.objects.filter(phone=phone).exists():
         return Response(APIResponse(success=False, data={}, message="Số điện thoại đã được sử dụng").__dict__(),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    print('step4')
     user = User.objects.create_user(username=phone, password=password, email=email.lower(), first_name=first_name)
-    user_profile = UserProfile(user=user, phone=phone)
+    user_profile = UserProfile(user=user, phone=phone, ip_address=get_client_ip(request))
     user_profile.save()
 
     django_login(request, user)

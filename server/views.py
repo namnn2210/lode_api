@@ -433,8 +433,13 @@ class SubgameAPIView(APIView):
 class UserAPIView(APIView):
     def get(self, request):
         users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(APIResponse(success=True, data=serializer.data, message="").__dict__())
+        list_users = []
+        for user in users:
+            user_profile = UserProfile.objects.get(user=user)
+            serializer = UserProfileSerializer(user_profile).data
+            list_users.append(serializer)
+            # serializer = UserSerializer(users, many=True)
+        return Response(APIResponse(success=True, data=list_users, message="").__dict__())
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -653,7 +658,7 @@ class BalanceTransactionsAPIView(APIView):
 
                         if transaction_status == 2:
                             notification = NotificationModel(category_id=3, title='Rút tiền không thành công',
-                                                             content='Lệnh rút tiền đã bị từ chối. Vui lòng vào chi tiết giao dịch để xem lí do hoặc liên hệ chúng tôi',
+                                                             content='Lí do: {}'.format(transaction_description),
                                                              user=balance_transaction.user)
                             notification.save()
 

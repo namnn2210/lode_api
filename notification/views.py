@@ -3,6 +3,7 @@ import jwt
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Q
+from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -33,7 +34,8 @@ class NotificationAPIView(APIView):
                 if user.is_staff or user.is_superuser:
                     notifications = NotificationModel.objects.filter(status=True)
                 else:
-                    notifications = NotificationModel.objects.filter(Q(user=user) | Q(user=None) & Q(status=True))
+                    notifications = NotificationModel.objects.filter(
+                        Q(user=user) | Q(user=None) & Q(status=True) & Q(read=False))
 
                 serializer = NotificationSerializer(notifications, many=True).data
                 return Response(APIResponse(success=True, data=serializer, message="").__dict__())
@@ -188,6 +190,21 @@ class NotificationAPIView(APIView):
         notification.save()
         return Response(APIResponse(success=True, data={}, message="").__dict__(),
                         status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def read_notifications(request):
+    user_id = request.data['user_id']
+    if isinstance(user_id, int):
+        notification_obj = NotificationModel.objects.get(pk=user_id)
+        notification_obj.read = True
+        notification_obj.save()
+    if isinstance(user_id, list):
+        for item in user_id:
+            notification_obj = NotificationModel.objects.get(pk=item)
+            notification_obj.read = True
+            notification_obj.save()
 
 
 @permission_classes([IsAuthenticated])

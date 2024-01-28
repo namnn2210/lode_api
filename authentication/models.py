@@ -14,6 +14,7 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=10, null=False, unique=True)
     balance = models.BigIntegerField(default=0)
     code = models.CharField(max_length=15, unique=True, null=True, blank=True)
+    ip_address = models.TextField(max_length=50, null=True)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

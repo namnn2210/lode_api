@@ -16,7 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def get_user_statistical(request):
     try:
@@ -31,8 +31,11 @@ def get_user_statistical(request):
             total_amount=Sum('amount')
         )
 
-        win_counts = Order.objects.values('user_id', 'win').annotate(
-            win_count=Count('win')
+        balance_transaction_sums_withdraw = BalanceTransaction.objects.filter(
+            transaction_type=2,
+            status=1
+        ).values('user_id').annotate(
+            total_amount=Sum('amount')
         )
 
         user_data = {}
@@ -48,8 +51,7 @@ def get_user_statistical(request):
                     'deposit': 0,
                     'amount_deposit': 0,
                     'withdraw': 0,
-                    'win': 0,
-                    'lost': 0
+                    'amount_withdraw': 0,
                 }
 
             if transaction_type == '1':
@@ -67,16 +69,14 @@ def get_user_statistical(request):
                     'deposit': 0,
                     'amount_deposit': 0,
                     'withdraw': 0,
-                    'win': 0,
-                    'lost': 0
+                    'amount_withdraw': 0,
                 }
 
             user_data[user_id]['amount_deposit'] = total_amount
 
-        for item in win_counts:
+        for item in balance_transaction_sums_withdraw:
             user_id = item['user_id']
-            win_status = item['win']
-            count = item['win_count']
+            total_amount = item['total_amount']
 
             if user_id not in user_data:
                 user_data[user_id] = {
@@ -84,15 +84,10 @@ def get_user_statistical(request):
                     'deposit': 0,
                     'amount_deposit': 0,
                     'withdraw': 0,
-                    'win': 0,
-                    'lost': 0
+                    'amount_withdraw': 0,
                 }
 
-            # Update win counts
-            if win_status:
-                user_data[user_id]['win'] = count
-            else:
-                user_data[user_id]['lost'] = count
+            user_data[user_id]['amount_withdraw'] = total_amount
 
         user_data_list = list(user_data.values())
 
