@@ -6,12 +6,22 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken, Token
 from django.contrib.auth import login as django_login
-import json
-import jwt
 from .serializers import UserSerializer
 from authentication.models import UserProfile
 from gameplay.serializers import UserProfileSerializer
 from server.models import APIResponse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode
+from django.http import Http404
+from rest_framework.views import APIView
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_encode
+from .serializers import PasswordResetSerializer
+from django.core.mail import send_mail
+
+import json
+import jwt
 
 
 def get_client_ip(request):
@@ -149,3 +159,64 @@ def account(request):
         # Handle invalid or missing Authorization header
         return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
                         status=status.HTTP_401_UNAUTHORIZED)
+
+
+def send_reset_email(email, reset_url):
+    subject = 'Lode 100 - Đặt lại mật khẩu'
+    message = f'Click the following link to reset your password:\n\n{reset_url}'
+    from_email = 'your@email.com'  # Replace with your email address
+    recipient_list = [email]
+
+    send_mail(subject, message, from_email, recipient_list)
+
+
+class PasswordResetView(APIView):
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = get_user_model().objects.filter(email=email).first()
+
+            if user:
+                # Generate and send the password reset token via email
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                reset_url = f"https://110lode.com/reset-password/{uid}/{token}/"
+
+                # Send reset URL to the user via email (implement this)
+                send_reset_email(email, reset_url)
+
+                # For demonstration purposes, we'll return the reset URL in the response
+                return Response(APIResponse(success=True, data={'reset_url': reset_url},
+                                            message="Email đặt lại mật khẩu đã gửi thành công").__dict__(),
+                                status=status.HTTP_200_OK)
+
+            else:
+                return Response(
+                    APIResponse(success=False, data={}, message="Thông tin email không chính xác").__dict__(),
+                    status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmView(APIView):
+    def post(self, request, uidb64, token):
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = get_user_model().objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+            raise Http404
+
+        if default_token_generator.check_token(user, token):
+            # Token is valid, allow the user to reset the password
+            # You can implement password reset logic here
+            # For simplicity, we'll return a success message in this example
+            new_password = request.POST.get('new_password')
+            user.set_password(new_password)
+            user.save()
+
+            return Response(APIResponse(success=True, data={}, message="Mật khẩu đặt lại thành công").__dict__(),
+                            status=status.HTTP_200_OK)
+        else:
+            return Response(APIResponse(success=False, data={}, message="Token không hợp lệ").__dict__(),
+                            status=status.HTTP_400_BAD_REQUEST)

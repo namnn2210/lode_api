@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'banks',
     'statistical',
     'notification',
-    'system'
+    'system',
 ]
 
 MIDDLEWARE = [
@@ -198,10 +198,18 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_METHODS = (
-        'GET',
-        'POST',
-        'PUT',
-        'PATCH',
-        'DELETE',
-        'OPTIONS'
-    )
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PORT = 25
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'crypminerltd@gmail.com'
+EMAIL_HOST_PASSWORD = 'joqu xjzf kgim cmhp'
