@@ -161,6 +161,40 @@ def account(request):
                         status=status.HTTP_401_UNAUTHORIZED)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def password_change(request):
+    user_id = request.data.get('user_id')
+    current_password = request.data.get('current_password')
+    new_password = request.data.get('new_password')
+    new_password2 = request.data.get('new_password2')
+    if not user_id or not current_password or not new_password or not new_password2:
+        return Response(APIResponse(success=False, data={}, message="Hãy nhập đầy đủ thông tin").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    if new_password != new_password2:
+        return Response(APIResponse(success=False, data={}, message="Mật khẩu mới không trùng khớp").__dict__(),
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user_profile = UserProfile.objects.get(pk=user_id)
+    except UserProfile.DoesNotExist:
+        return Response(APIResponse(success=False, data={}, message="Thông tin người dùng không chính xác").__dict__(),
+                        status=status.HTTP_404_NOT_FOUND)
+
+    user = user_profile.user
+
+    if not user.check_password(current_password):
+        return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    user.set_password(new_password)
+    user.save()
+
+    return Response(APIResponse(success=True, data={}, message="Mật khẩu thay đổi thành công").__dict__(),
+                    status=status.HTTP_200_OK)
+
+
 def send_reset_email(email, reset_url):
     subject = 'Lode 100 - Đặt lại mật khẩu'
     message = f'Bạn vui lòng truy cập đường dẫn dưới đây và thao tác để cấp lại mật khẩu:\n\n{reset_url}'
