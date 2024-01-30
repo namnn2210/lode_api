@@ -595,9 +595,9 @@ class BalanceTransactionsAPIView(APIView):
                 user = get_object_or_404(User, pk=user_id)
 
                 if user.is_superuser or user.is_staff:
-                    balance_transactions = BalanceTransaction.objects.all().select_related('bank')
+                    balance_transactions = BalanceTransaction.objects.all().order_by('-created_at').select_related('bank')
                 else:
-                    balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
+                    balance_transactions = BalanceTransaction.objects.filter(user=user).order_by('-created_at').select_related('bank')
                 serialized_data = BalanceTransactionSerializer(balance_transactions, many=True).data
                 for data in serialized_data:
                     data['user_profile'] = UserProfileSerializer(
