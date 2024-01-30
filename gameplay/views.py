@@ -11,7 +11,6 @@ from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from .serializers import OrderSerializer
 from authentication.serializers import UserSerializer, UserProfileSerializer
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from django.db.models import Count
 import json
@@ -100,8 +99,6 @@ class OrderView(APIView):
                 decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
                 user_id = decoded_token['user_id']
                 user = get_object_or_404(User, pk=user_id)
-                # paginator = PageNumberPagination()
-                # paginator.page_size = 10
                 if user.is_superuser or user.is_staff:
                     if request.query_params.get('start_date') and request.query_params.get('end_date'):
                         start_date = datetime.strptime(request.query_params.get('start_date'), "%Y-%m-%d").date()
@@ -114,7 +111,6 @@ class OrderView(APIView):
                                                                                                         'user')
                     else:
                         records = Order.objects.all().order_by('-created_at').select_related('city', 'mode', 'user')
-                    # result_page = paginator.paginate_queryset(records, request)
                     serialized_data = OrderSerializer(records, many=True).data
                     for data in serialized_data:
                         data['user_profile'] = UserProfileSerializer(
@@ -125,7 +121,6 @@ class OrderView(APIView):
                 else:
                     records = Order.objects.filter(
                         user=user).select_related('city', 'mode', 'user')
-                    # result_page = paginator.paginate_queryset(records, request)
                     serialized_data = OrderSerializer(records, many=True).data
                     for data in serialized_data:
                         data['user_profile'] = UserProfileSerializer(

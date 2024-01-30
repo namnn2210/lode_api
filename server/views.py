@@ -14,7 +14,6 @@ from .serializer import GameSerializer, SubGameSerializer, CitySerializer, RateS
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework import status
 import pytz
@@ -584,8 +583,6 @@ def get_user_profile_by_phone(request):
 class BalanceTransactionsAPIView(APIView):
 
     def get(self, request):
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         if auth_header.startswith('Bearer '):
             token_key = auth_header[len('Bearer '):]
@@ -601,8 +598,7 @@ class BalanceTransactionsAPIView(APIView):
                     balance_transactions = BalanceTransaction.objects.all().select_related('bank')
                 else:
                     balance_transactions = BalanceTransaction.objects.filter(user=user).select_related('bank')
-                result_page = paginator.paginate_queryset(balance_transactions, request)
-                serialized_data = BalanceTransactionSerializer(result_page, many=True).data
+                serialized_data = BalanceTransactionSerializer(balance_transactions, many=True).data
                 for data in serialized_data:
                     data['user_profile'] = UserProfileSerializer(
                         get_object_or_404(UserProfile, user_id=data['user'])).data
@@ -616,8 +612,6 @@ class BalanceTransactionsAPIView(APIView):
             return Response(APIResponse(success=False, data={}, message="Thiếu token").__dict__())
 
     def put(self, request, transaction_id):
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         if auth_header.startswith('Bearer '):
             token_key = auth_header[len('Bearer '):]
