@@ -1,6 +1,7 @@
 from django.db import models
 from server.models import BalanceTransaction
 from gameplay.models import Order
+from notification.models import NotificationModel
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 
@@ -30,6 +31,14 @@ class UserProfile(models.Model):
             code = prefix + random_digits
             self.code = code
         super().save(*args, **kwargs)
+
+
+@receiver(models.signals.post_save, sender=NotificationModel)
+def update_balance_withdraw_deposit(sender, instance, **kwargs):
+    user_profile = UserProfile.objects.get(user=instance.user)
+    if not user_profile.read_noti:
+        user_profile.read_noti = True
+        user_profile.save()
 
 
 @receiver(models.signals.post_save, sender=BalanceTransaction)
