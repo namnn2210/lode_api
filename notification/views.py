@@ -194,28 +194,15 @@ class NotificationAPIView(APIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def read_notifications(request):
-    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    if auth_header.startswith('Bearer '):
-        token_key = auth_header[len('Bearer '):]
-        print(token_key)
-        secret_key = '!@lode@@!!123'
-        try:
-            # Decode the JWT
-            decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
-            user_id = decoded_token['user_id']
-            user = get_object_or_404(User, pk=user_id)
-            user_profile = UserProfile.objects.get(user=user)
-            user_profile.read_noti = True
-            user_profile.save()
-            Response(APIResponse(success=True, data={}, message="").__dict__())
-        except jwt.ExpiredSignatureError as ex:
-            print(str(ex))
-            return Response(
-                APIResponse(success=False, data={}, message="Không xác thực được người dùng").__dict__())
+    user_id = request.data.get('user_id', None)
+    if user_id:
+        user = get_object_or_404(User, pk=user_id)
+        user_profile = UserProfile.objects.get(user=user)
+        user_profile.read_noti = True
+        user_profile.save()
+        Response(APIResponse(success=True, data={}, message="").__dict__())
     else:
-        return Response(
-            APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
-            status=status.HTTP_404_NOT_FOUND)
+        Response(APIResponse(success=False, data={}, message="Dữ liệu không hợp lệ").__dict__())
 
 
 @permission_classes([IsAuthenticated])
