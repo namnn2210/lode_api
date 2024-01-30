@@ -192,7 +192,7 @@ class NotificationAPIView(APIView):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def read_notifications(request):
     print('===========================')
     user_id = request.data.get('user_id', None)
@@ -205,12 +205,14 @@ def read_notifications(request):
             return Response(
                 APIResponse(success=False, data={}, message="Không tìm thấy dữ liệu").__dict__(),
                 status=status.HTTP_404_NOT_FOUND)
+        print('==========', user)
         user_profile = UserProfile.objects.get(user=user)
+        print('*************', user_profile)
         user_profile.read_noti = True
         user_profile.save()
-        Response(APIResponse(success=True, data={}, message="").__dict__())
+        return Response(APIResponse(success=True, data={}, message="").__dict__())
     else:
-        Response(APIResponse(success=False, data={}, message="Dữ liệu không hợp lệ").__dict__())
+        return Response(APIResponse(success=False, data={}, message="Dữ liệu không hợp lệ").__dict__())
 
 
 @permission_classes([IsAuthenticated])
