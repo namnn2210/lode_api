@@ -131,7 +131,9 @@ def get_result(request):
             str_date = ''
         current_timestamp = int(time.time())
         url = f'https://www.xoso.net/getkqxs/{city}{str_date}.js_={current_timestamp}'
-        html_response = requests.get(url).text
+        html_response = requests.get(url).text.replace('\t', '').replace('nowrap', '')
+        print(html_response)
+        title_regex = r'<div class="title">(.*?)</div>'
         weekday_regex = r'<td class="thu"\s>\s{0,}(.*?)<\/td>'
         date_regex = r'<td class="ngay">\s{0,}Ng&agrave;y:\s(.*?)\s<\/td>'
         db_regex = r'<td class="giaidb">\s{0,}(.*?)<\/td>'
@@ -144,6 +146,7 @@ def get_result(request):
         giai7_regex = r'<td class="giai7">\s{0,}(.*?)<\/td>'
         giai8_regex = r'<td class="giai8">\s{0,}(.*?)<\/td>'
 
+        title_data = extract_data(title_regex, html_response)
         weekday_data = extract_data(weekday_regex, html_response)
         date_data = extract_data(date_regex, html_response)
         db_data = extract_data(db_regex, html_response)
@@ -156,10 +159,12 @@ def get_result(request):
         giai7_data = extract_data(giai7_regex, html_response)
         giai8_data = extract_data(giai8_regex, html_response)
 
-        print(weekday_data)
-        formatted_date_data = date_data.replace('/', '-')
+        if city == 'mien-bac':
+            # formatted_date_data = date_data.replace('/', '-')
 
-        title = f'{weekday_data} ngày {formatted_date_data}'
+            title = f'KQXS {weekday_data} {date_data}'
+        else:
+            title = title_data
         data = {
             'title': title,
             'result': {
