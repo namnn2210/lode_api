@@ -90,8 +90,8 @@ class BalanceTransaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=20, choices=[(1, 'Nạp'), (2, 'Rút')])
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE, null=True)
-    user_name = models.CharField(max_length=255, default='DO VAN NINH')
-    bank_number = models.CharField(max_length=255, default='563633686')
+    user_name = models.CharField(max_length=255, default='')
+    bank_number = models.CharField(max_length=255, default='')
     description = models.TextField(max_length=255, default='')
     amount = models.BigIntegerField(default=0)
     status = models.CharField(max_length=20,

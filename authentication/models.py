@@ -59,7 +59,7 @@ def update_balance_order(sender, instance, **kwargs):
     user_profile = UserProfile.objects.get(user=instance.user)
     if instance.status == 0:
         # Assuming you have a Banking object for the user
-        user_profile.balance -= instance.total
+        user_profile.balance -= instance.pay_number
         if user_profile.balance < 0:
             user_profile.balance = 0
         user_profile.save()
