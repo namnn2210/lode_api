@@ -80,7 +80,7 @@ class NotificationAPIView(APIView):
                                     serializer = NotificationSerializer(noti).data
                                     if user_id:
                                         user_profile = UserProfileSerializer(
-                                            UserProfile.objects.get(user_id=user_id)).data
+                                            UserProfile.objects.get(pk=user_id)).data
                                         del user_profile['user']
                                         serializer['user'] = user_profile
                                     list_noti_saved.append(serializer)
