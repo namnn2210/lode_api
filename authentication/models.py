@@ -34,7 +34,7 @@ class UserProfile(models.Model):
 
 
 @receiver(models.signals.post_save, sender=NotificationModel)
-def update_balance_withdraw_deposit(sender, instance, **kwargs):
+def update_noti_status(sender, instance, **kwargs):
     user_profile = UserProfile.objects.get(user=instance.user)
     if not user_profile.read_noti:
         user_profile.read_noti = True
