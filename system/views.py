@@ -46,11 +46,15 @@ class SystemAPIView(APIView):
             zalo = request.data.get('zalo', '')
             viber = request.data.get('viber', '')
             telegram = request.data.get('telegram', '')
+            google_code = request.data.get('google_code', '')
+            web_title = request.data.get('web_title', '')
 
             system.hotline = hotline
             system.zalo = zalo
             system.viber = viber
             system.telegram = telegram
+            system.google_code = google_code
+            system.web_title = web_title
             system.save()
             serializer = SystemModelSerializer(system).data
 
