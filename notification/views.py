@@ -192,11 +192,14 @@ class NotificationAPIView(APIView):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def read_notifications(request):
     user_id = request.data.get('user_id', None)
     if user_id:
-        user = get_object_or_404(User, pk=user_id)
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            Response(APIResponse(success=False, data={}, message="Không tìm thấy tài khoản").__dict__())
         user_profile = UserProfile.objects.get(user=user)
         user_profile.read_noti = True
         user_profile.save()
