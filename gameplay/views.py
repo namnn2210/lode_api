@@ -100,8 +100,8 @@ class OrderView(APIView):
                 decoded_token = jwt.decode(token_key, secret_key, algorithms=["HS256"])
                 user_id = decoded_token['user_id']
                 user = get_object_or_404(User, pk=user_id)
-                paginator = PageNumberPagination()
-                paginator.page_size = 10
+                # paginator = PageNumberPagination()
+                # paginator.page_size = 10
                 if user.is_superuser or user.is_staff:
                     if request.query_params.get('start_date') and request.query_params.get('end_date'):
                         start_date = datetime.strptime(request.query_params.get('start_date'), "%Y-%m-%d").date()
@@ -110,12 +110,12 @@ class OrderView(APIView):
 
                         print(start_date, end_date)
                         records = Order.objects.filter(
-                            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).select_related('city', 'mode',
+                            Q(created_at__gte=start_date) & Q(created_at__lte=end_date)).order_by('-created_at').select_related('city', 'mode',
                                                                                                         'user')
                     else:
-                        records = Order.objects.all().select_related('city', 'mode', 'user')
-                    result_page = paginator.paginate_queryset(records, request)
-                    serialized_data = OrderSerializer(result_page, many=True).data
+                        records = Order.objects.all().order_by('-created_at').select_related('city', 'mode', 'user')
+                    # result_page = paginator.paginate_queryset(records, request)
+                    serialized_data = OrderSerializer(records, many=True).data
                     for data in serialized_data:
                         data['user_profile'] = UserProfileSerializer(
                             get_object_or_404(UserProfile, user_id=data['user']['id'])).data
@@ -125,8 +125,8 @@ class OrderView(APIView):
                 else:
                     records = Order.objects.filter(
                         user=user).select_related('city', 'mode', 'user')
-                    result_page = paginator.paginate_queryset(records, request)
-                    serialized_data = OrderSerializer(result_page, many=True).data
+                    # result_page = paginator.paginate_queryset(records, request)
+                    serialized_data = OrderSerializer(records, many=True).data
                     for data in serialized_data:
                         data['user_profile'] = UserProfileSerializer(
                             get_object_or_404(UserProfile, user_id=data['user']['id'])).data
