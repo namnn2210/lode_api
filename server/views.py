@@ -159,9 +159,8 @@ def get_result(request):
         giai7_data = extract_data(giai7_regex, html_response)
         giai8_data = extract_data(giai8_regex, html_response)
 
-        if city == 'mien-bac':
+        if city != 'mien-bac':
             # formatted_date_data = date_data.replace('/', '-')
-
             title = f'KQXS {weekday_data} {date_data}'
         else:
             title = title_data
