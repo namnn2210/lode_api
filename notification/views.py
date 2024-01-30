@@ -188,8 +188,7 @@ class NotificationAPIView(APIView):
 
         notification.status = False
         notification.save()
-        return Response(APIResponse(success=True, data={}, message="").__dict__(),
-                        status=status.HTTP_204_NO_CONTENT)
+        return Response(APIResponse(success=True, data={}, message="").__dict__())
 
 
 @api_view(['POST'])
