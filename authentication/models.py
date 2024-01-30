@@ -15,6 +15,7 @@ class UserProfile(models.Model):
     balance = models.BigIntegerField(default=0)
     code = models.CharField(max_length=15, unique=True, null=True, blank=True)
     ip_address = models.TextField(max_length=50, null=True)
+    read_noti = models.BooleanField(default=False)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
