@@ -134,8 +134,11 @@ def get_result(request):
         html_response = requests.get(url).text.replace('\t', '').replace('nowrap', '')
         print(html_response)
         title_regex = r'<div class="title">(.*?)</div>'
-        weekday_regex = r'<td class="thu"\s>\s{0,}(.*?)<\/td>'
-        date_regex = r'<td class="ngay">\s{0,}Ng&agrave;y:\s(.*?)\s<\/td>'
+        weekday_regex = r'<td\s{0,}class="thu"\s{0,}>\s{0,}(.*?)<\/td>'
+        if city == 'mien-bac':
+            date_regex = r'<td\s{0,}class="ngay">\s{0,}Ng&agrave;y:\s(.*?)\s<\/td>'
+        else:
+            date_regex = r'<td class="ngay">Ngày:\s(.*?)<\/td>'
         db_regex = r'<td class="giaidb">\s{0,}(.*?)<\/td>'
         giai1_regex = r'<td class="giai1">\s{0,}(.*?)<\/td>'
         giai2_regex = r'<td class="giai2">\s{0,}(.*?)<\/td>'
@@ -161,7 +164,7 @@ def get_result(request):
 
         if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam':
             # formatted_date_data = date_data.replace('/', '-')
-            title = f'{title_data} {weekday_data} {date_data}'
+            title = f'{title_data} {date_data}'
         else:
             title = title_data
         data = {
