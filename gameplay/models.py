@@ -14,7 +14,7 @@ class Order(models.Model):
     bet_amount = models.IntegerField(default=1000)
     pay_number = models.BigIntegerField(null=False, default=1000)
     total = models.BigIntegerField(null=False, default=1000)
-    win = models.BooleanField(default=None)
+    win = models.BooleanField(default=None, null=True)
     result = models.TextField(null=False, default="")
     note = models.TextField()
     status = models.BooleanField(default=False)
