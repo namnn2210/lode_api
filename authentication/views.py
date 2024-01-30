@@ -163,7 +163,7 @@ def account(request):
 
 def send_reset_email(email, reset_url):
     subject = 'Lode 100 - Đặt lại mật khẩu'
-    message = f'Click the following link to reset your password:\n\n{reset_url}'
+    message = f'Bạn vui lòng truy cập đường dẫn dưới đây và thao tác để cấp lại mật khẩu:\n\n{reset_url}'
     from_email = 'your@email.com'  # Replace with your email address
     recipient_list = [email]
 

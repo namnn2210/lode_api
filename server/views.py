@@ -161,7 +161,7 @@ def get_result(request):
 
         if city == 'mien-bac':
             # formatted_date_data = date_data.replace('/', '-')
-            title = f'KQXS Miền Bắc {weekday_data} {date_data}'
+            title = f'{title_data} {weekday_data} {date_data}'
         else:
             title = title_data
         data = {
