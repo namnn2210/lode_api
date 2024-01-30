@@ -98,11 +98,11 @@ def get_cities(request):
         print('no params -> get today cities')
         today = datetime.now(desired_timezone).date()
         print('today', today)
-        weekday = today.weekday()
+        weekday = today.isoweekday()
         print('day of week', weekday)
     else:
         date_object = datetime.fromisoformat(query_date)
-        weekday = date_object.weekday()
+        weekday = date_object.isoweekday()
     if region:
         print('region', region)
         cities = CitySerializer(City.objects.filter((Q(date__contains=str(weekday)) | Q(date='')) & Q(region=region)),

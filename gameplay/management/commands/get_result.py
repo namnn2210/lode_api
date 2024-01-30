@@ -265,7 +265,7 @@ class Command(BaseCommand):
             # Get result of order and get data return -> update order status and update user balance
             current_datetime = datetime.now()
             print('now', current_datetime)
-            weekday = current_datetime.weekday()
+            weekday = current_datetime.isoweekday()
             print('weekday', weekday)
             current_date = current_datetime.date()
             print('current_date', current_date)
