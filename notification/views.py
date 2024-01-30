@@ -71,10 +71,10 @@ class NotificationAPIView(APIView):
                             if user_ids and len(user_ids) > 0:
                                 for user_id in user_ids:
                                     if user_id:
-                                        to_user = User.objects.get(pk=user_id)
+                                        to_user = UserProfile.objects.get(pk=user_id)
                                     else:
                                         to_user = None
-                                    noti = NotificationModel(category=category, user=to_user, title=title,
+                                    noti = NotificationModel(category=category, user=to_user.user, title=title,
                                                              content=content)
                                     noti.save()
                                     serializer = NotificationSerializer(noti).data

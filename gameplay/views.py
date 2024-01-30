@@ -22,11 +22,10 @@ import jwt
 class OrderView(APIView):
     def post(self, request):
         body = json.loads(request.body.decode('utf-8'))
-        # user = get_object_or_404(User, pk=body['user_id'])
-        # user profile id
+        user = get_object_or_404(User, pk=body['user_id'])
         city = get_object_or_404(City, pk=body['city_id'])
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
-        user_profile = get_object_or_404(UserProfile, pk=body['user_id'])
+        user_profile = get_object_or_404(UserProfile, user=user)
         bet_amount = body['bet_amount']
         if bet_amount < 1000:
             return Response(APIResponse(success=False, data={}, message="Tiền cược phải từ 1000 VNĐ").__dict__())
@@ -80,7 +79,7 @@ class OrderView(APIView):
                     return Response(APIResponse(success=False, data={},
                                                 message="Bạn chỉ được chọn tối đa 10 số").__dict__())
 
-            order = Order(user=user_profile.user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
+            order = Order(user=user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
                           numbers=body['numbers'],
                           pay_number=pay_number, total=total)
             order_dict = OrderSerializer(order).data
