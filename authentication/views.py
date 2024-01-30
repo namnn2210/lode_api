@@ -181,7 +181,7 @@ class PasswordResetView(APIView):
                 # Generate and send the password reset token via email
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
-                reset_url = f"http://localhost:5173/reset-password/{uid}/{token}/"
+                reset_url = f"https://110lode.com/reset-password/{uid}/{token}/"
 
                 # Send reset URL to the user via email (implement this)
                 send_reset_email(email, reset_url)
