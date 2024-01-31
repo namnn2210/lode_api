@@ -35,10 +35,16 @@ class UserProfile(models.Model):
 
 @receiver(models.signals.post_save, sender=NotificationModel)
 def update_noti_status(sender, instance, **kwargs):
-    user_profile = UserProfile.objects.get(user=instance.user)
-    if not user_profile.read_noti:
-        user_profile.read_noti = True
-        user_profile.save()
+    if instance.user is not None:
+        user_profile = UserProfile.objects.get(user=instance.user)
+        if not user_profile.read_noti:
+            user_profile.read_noti = True
+            user_profile.save()
+    else:
+        user_profile = UserProfile.objects.all()
+        for profile in user_profile:
+            profile.read_noti = True
+            profile.save()
 
 
 @receiver(models.signals.post_save, sender=BalanceTransaction)
