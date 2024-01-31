@@ -62,14 +62,14 @@ class NotificationAPIView(APIView):
                 if user.is_superuser or user.is_staff:
                     try:
                         category_id = request.data.get('category_id', None)
-                        user_ids = request.data.get('user_id', [])
+                        user_ids = request.data.get('user_id')
                         print('============================', request.data.get('user_id'))
                         title = request.data.get('title', '')
                         content = request.data.get('content', '')
                         list_noti_saved = []
                         if category_id:
                             category = NotificationCategoryModel.objects.get(pk=category_id)
-                            if (user_ids and len(user_ids) > 0) or user_ids is not None:
+                            if len(user_ids) > 0 and user_ids is not None:
                                 for user_id in user_ids:
                                     if user_id:
                                         to_user = UserProfile.objects.get(pk=user_id)
