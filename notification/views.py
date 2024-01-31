@@ -69,22 +69,23 @@ class NotificationAPIView(APIView):
                         list_noti_saved = []
                         if category_id:
                             category = NotificationCategoryModel.objects.get(pk=category_id)
-                            if len(user_ids) > 0 and user_ids is not None:
-                                for user_id in user_ids:
-                                    if user_id:
-                                        to_user = UserProfile.objects.get(pk=user_id)
-                                    else:
-                                        to_user = None
-                                    noti = NotificationModel(category=category, user=to_user.user, title=title,
-                                                             content=content)
-                                    noti.save()
-                                    serializer = NotificationSerializer(noti).data
-                                    if user_id:
-                                        user_profile = UserProfileSerializer(
-                                            UserProfile.objects.get(pk=user_id)).data
-                                        del user_profile['user']
-                                        serializer['user'] = user_profile
-                                    list_noti_saved.append(serializer)
+                            if user_ids is not None:
+                                if len(user_ids) > 0:
+                                    for user_id in user_ids:
+                                        if user_id:
+                                            to_user = UserProfile.objects.get(pk=user_id)
+                                        else:
+                                            to_user = None
+                                        noti = NotificationModel(category=category, user=to_user.user, title=title,
+                                                                 content=content)
+                                        noti.save()
+                                        serializer = NotificationSerializer(noti).data
+                                        if user_id:
+                                            user_profile = UserProfileSerializer(
+                                                UserProfile.objects.get(pk=user_id)).data
+                                            del user_profile['user']
+                                            serializer['user'] = user_profile
+                                        list_noti_saved.append(serializer)
                             else:
                                 noti = NotificationModel(category=category, user=None, title=title, content=content)
                                 noti.save()
