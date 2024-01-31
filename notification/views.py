@@ -63,6 +63,7 @@ class NotificationAPIView(APIView):
                     try:
                         category_id = request.data.get('category_id', None)
                         user_ids = request.data.get('user_id', [])
+                        print('============================', request.data.get('user_id'))
                         title = request.data.get('title', '')
                         content = request.data.get('content', '')
                         list_noti_saved = []
