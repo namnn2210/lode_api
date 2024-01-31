@@ -68,7 +68,7 @@ class NotificationAPIView(APIView):
                         list_noti_saved = []
                         if category_id:
                             category = NotificationCategoryModel.objects.get(pk=category_id)
-                            if user_ids and len(user_ids) > 0:
+                            if user_ids and len(user_ids) > 0 or user_ids is not None:
                                 for user_id in user_ids:
                                     if user_id:
                                         to_user = UserProfile.objects.get(pk=user_id)
