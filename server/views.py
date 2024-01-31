@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework import status
+from django.utils.timezone import now
+import random
 import pytz
 import requests
 import json
@@ -595,9 +597,11 @@ class BalanceTransactionsAPIView(APIView):
                 user = get_object_or_404(User, pk=user_id)
 
                 if user.is_superuser or user.is_staff:
-                    balance_transactions = BalanceTransaction.objects.all().order_by('-created_at').select_related('bank')
+                    balance_transactions = BalanceTransaction.objects.all().order_by('-created_at').select_related(
+                        'bank')
                 else:
-                    balance_transactions = BalanceTransaction.objects.filter(user=user).order_by('-created_at').select_related('bank')
+                    balance_transactions = BalanceTransaction.objects.filter(user=user).order_by(
+                        '-created_at').select_related('bank')
                 serialized_data = BalanceTransactionSerializer(balance_transactions, many=True).data
                 for data in serialized_data:
                     data['user_profile'] = UserProfileSerializer(
@@ -742,3 +746,49 @@ class BankingAPIView(APIView):
             return Response(
                 APIResponse(success=False, data={}, message="Thiếu token").__dict__(),
                 status=status.HTTP_404_NOT_FOUND)
+
+
+# Initial values
+START_VALUE = 0
+MIN_INCREASE = 200000  # Minimum increase amount
+MAX_INCREASE = 300000  # Maximum increase amount
+
+# Initialize counters and last reset time
+last_reset_time = now()
+total_deposit = START_VALUE
+total_order_amount = START_VALUE
+total_withdraw = START_VALUE
+
+
+class NumbersView(APIView):
+    def get(self, request, format=None):
+        global last_reset_time, total_deposit, total_order_amount, total_withdraw
+
+        current_time = now()
+
+        # Reset daily at 00:00
+        if current_time.date() > last_reset_time.date():
+            last_reset_time = current_time
+            total_deposit = START_VALUE
+            total_order_amount = START_VALUE
+            total_withdraw = START_VALUE
+
+        # Calculate minutes since last reset
+        minutes_since_reset = (current_time - last_reset_time).total_seconds() / 60
+
+        # Update each counter by a random amount within the range for each minute passed
+        total_deposit += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
+        total_order_amount += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
+        total_withdraw += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
+
+        # Reset the last reset time to current time to avoid multiple increases within the same minute
+        last_reset_time = current_time
+
+        return Response(APIResponse(success=True, data={
+            'time': current_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'total_deposit': total_deposit,
+            'total_order_amount': total_order_amount,
+            'total_withdraw': total_withdraw
+        }, message="").__dict__())
+
+
