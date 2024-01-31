@@ -43,7 +43,7 @@ class Subgame(models.Model):
     region = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     guide = models.TextField(max_length=5000)
-    rate = models.IntegerField(default=0)
+    rate = models.FloatField(max_length=5, default=0.0)
     pay_number = models.IntegerField(default=0)
     min_amount = models.IntegerField(default=1000)
     max_amount = models.BigIntegerField(default=10000000000)
