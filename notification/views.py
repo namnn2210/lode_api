@@ -70,7 +70,9 @@ class NotificationAPIView(APIView):
                         if category_id:
                             category = NotificationCategoryModel.objects.get(pk=category_id)
                             if user_ids is not None:
+                                print('not none')
                                 if len(user_ids) > 0:
+                                    print('len > 0')
                                     for user_id in user_ids:
                                         if user_id:
                                             to_user = UserProfile.objects.get(pk=user_id)
@@ -90,10 +92,10 @@ class NotificationAPIView(APIView):
                                 noti = NotificationModel(category=category, user=None, title=title, content=content)
                                 noti.save()
                                 serializer = NotificationSerializer(noti).data
-                                if user_id:
-                                    user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
-                                    del user_profile['user']
-                                    serializer['user'] = user_profile
+                                # if user_id:
+                                #     user_profile = UserProfileSerializer(UserProfile.objects.get(user_id=user_id)).data
+                                #     del user_profile['user']
+                                #     serializer['user'] = user_profile
                                 list_noti_saved.append(serializer)
 
                             return Response(APIResponse(success=True, data=list_noti_saved, message="").__dict__())
