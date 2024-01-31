@@ -89,6 +89,7 @@ class NotificationAPIView(APIView):
                                             serializer['user'] = user_profile
                                         list_noti_saved.append(serializer)
                             else:
+                                print('none send all')
                                 noti = NotificationModel(category=category, user=None, title=title, content=content)
                                 noti.save()
                                 serializer = NotificationSerializer(noti).data
