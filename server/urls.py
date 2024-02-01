@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import fetch_games, fetch_rates, get_games, get_banking, get_rates, get_cities, get_result, deposit, \
-    withdraw, get_user_profile_by_phone
+    withdraw, get_user_profile_by_phone, count_total
 from .views import SubgameAPIView, GameAPIView, UserAPIView, UserProfileAPIView, BalanceTransactionsAPIView, \
-    BankingAPIView, NumbersView
+    BankingAPIView
 
 urlpatterns = [
     path('game/fetch', fetch_games, name='fetch_games'),
@@ -38,5 +38,5 @@ urlpatterns = [
     path('api/banking', BankingAPIView.as_view(), name='banking-list'),
     path('api/banking/<int:banking_id>', BankingAPIView.as_view(), name='banking-detail'),
 
-    path('api/count_total', NumbersView.as_view(), name='count_total')
+    path('api/count_total', count_total, name='count_total')
 ]

@@ -760,34 +760,34 @@ total_order_amount = START_VALUE
 total_withdraw = START_VALUE
 
 
+@api_view(['GET'])
 @permission_classes([AllowAny])
-class NumbersView(APIView):
-    def get(self, request, format=None):
-        global last_reset_time, total_deposit, total_order_amount, total_withdraw
+def count_total(request):
+    global last_reset_time, total_deposit, total_order_amount, total_withdraw
 
-        current_time = now()
+    current_time = now()
 
-        # Reset daily at 00:00
-        if current_time.date() > last_reset_time.date():
-            last_reset_time = current_time
-            total_deposit = START_VALUE
-            total_order_amount = START_VALUE
-            total_withdraw = START_VALUE
-
-        # Calculate minutes since last reset
-        minutes_since_reset = (current_time - last_reset_time).total_seconds() / 60
-
-        # Update each counter by a random amount within the range for each minute passed
-        total_deposit += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
-        total_order_amount += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
-        total_withdraw += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
-
-        # Reset the last reset time to current time to avoid multiple increases within the same minute
+    # Reset daily at 00:00
+    if current_time.date() > last_reset_time.date():
         last_reset_time = current_time
+        total_deposit = START_VALUE
+        total_order_amount = START_VALUE
+        total_withdraw = START_VALUE
 
-        return Response(APIResponse(success=True, data={
-            'time': current_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'total_deposit': total_deposit,
-            'total_order_amount': total_order_amount,
-            'total_withdraw': total_withdraw
-        }, message="").__dict__())
+    # Calculate minutes since last reset
+    minutes_since_reset = (current_time - last_reset_time).total_seconds() / 60
+
+    # Update each counter by a random amount within the range for each minute passed
+    total_deposit += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
+    total_order_amount += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
+    total_withdraw += int(minutes_since_reset) * random.randint(MIN_INCREASE, MAX_INCREASE)
+
+    # Reset the last reset time to current time to avoid multiple increases within the same minute
+    last_reset_time = current_time
+
+    return Response(APIResponse(success=True, data={
+        'time': current_time.strftime('%Y-%m-%d %H:%M:%S'),
+        'total_deposit': total_deposit,
+        'total_order_amount': total_order_amount,
+        'total_withdraw': total_withdraw
+    }, message="").__dict__())
