@@ -750,8 +750,8 @@ class BankingAPIView(APIView):
 
 # Initial values
 START_VALUE = 0
-MIN_INCREASE = 200000  # Minimum increase amount
-MAX_INCREASE = 300000  # Maximum increase amount
+MIN_INCREASE = 50000000  # Minimum increase amount
+MAX_INCREASE = 100000000  # Maximum increase amount
 
 # Initialize counters and last reset time
 last_reset_time = now()
@@ -760,6 +760,7 @@ total_order_amount = START_VALUE
 total_withdraw = START_VALUE
 
 
+@permission_classes([AllowAny])
 class NumbersView(APIView):
     def get(self, request, format=None):
         global last_reset_time, total_deposit, total_order_amount, total_withdraw
@@ -790,5 +791,3 @@ class NumbersView(APIView):
             'total_order_amount': total_order_amount,
             'total_withdraw': total_withdraw
         }, message="").__dict__())
-
-
