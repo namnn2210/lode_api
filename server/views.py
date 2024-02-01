@@ -133,7 +133,6 @@ def get_result(request):
         current_timestamp = int(time.time())
         url = f'https://www.xoso.net/getkqxs/{city}{str_date}.js_={current_timestamp}'
         html_response = requests.get(url).text.replace('\t', '').replace('nowrap', '')
-        print(html_response)
         title_regex = r'<div class="title">(.*?)</div>'
         weekday_regex = r'<td\s{0,}class="thu"\s{0,}>\s{0,}(.*?)<\/td>'
         if city == 'mien-bac':
@@ -163,7 +162,7 @@ def get_result(request):
         giai7_data = extract_data(giai7_regex, html_response)
         giai8_data = extract_data(giai8_regex, html_response)
 
-        if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam' or city == 'khanh-hoa' or city == 'da-nang':
+        if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam' or city == 'khanh-hoa' or city == 'da-nang' or city == 'binh-dinh' or city == 'quang-binh' or city == 'quang-tri':
             # formatted_date_data = date_data.replace('/', '-')
             title = f'{title_data} {date_data}'
         else:
