@@ -162,7 +162,7 @@ def get_result(request):
         giai7_data = extract_data(giai7_regex, html_response)
         giai8_data = extract_data(giai8_regex, html_response)
 
-        if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam' or city == 'khanh-hoa' or city == 'da-nang' or city == 'binh-dinh' or city == 'quang-binh' or city == 'quang-tri':
+        if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam' or city == 'khanh-hoa' or city == 'da-nang' or city == 'binh-dinh' or city == 'quang-binh' or city == 'quang-tri' or city == 'ninh-thuan' or city == 'gia-lai':
             # formatted_date_data = date_data.replace('/', '-')
             title = f'{title_data} {date_data}'
         else:
