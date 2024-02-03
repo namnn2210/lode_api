@@ -25,7 +25,7 @@ class OrderView(APIView):
         print('**********', user)
         city = get_object_or_404(City, pk=body['city_id'])
         mode = get_object_or_404(Subgame, pk=body['mode_id'])
-        user_profile = get_object_or_404(UserProfile, user=user)
+        user_profile = get_object_or_404(UserProfile, phone=user.username)
         print('************', user_profile)
         bet_amount = body['bet_amount']
         if bet_amount < 1000:
@@ -60,6 +60,7 @@ class OrderView(APIView):
         # Kiểm tra trò chơi có đúng vùng hay không
         if mode.region == city.region:
             # Kiểm tra thời gian đặt lệnh đã quá thời gian có kết quả chưa
+            print(today_date, order_date_obj, current_time, time_release_object)
             if today_date == order_date_obj and current_time > time_release_object:
                 order_date_obj = today_date + timedelta(days=1)
             elif today_date > order_date_obj:
