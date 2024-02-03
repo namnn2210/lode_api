@@ -53,8 +53,8 @@ class OrderView(APIView):
         order_date = body['order_date']
         order_date_obj = datetime.strptime(order_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
         today_date = datetime.now().date()
-        print('===========================================', (datetime.utcnow() + timedelta(hours=7)).time())
-        current_time = datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S").time()
+        current_time = datetime.strptime((datetime.utcnow() + timedelta(hours=7)).time().strftime("%H:%M:%S"),
+                                         "%H:%M:%S").time()
 
         print(order_date_obj, today_date)
         print(current_time, time_release_object)
