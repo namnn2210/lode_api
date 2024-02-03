@@ -94,7 +94,7 @@ def get_user_statistical(request):
         print('============', user_data_list)
 
         for user_info in user_data_list:
-            user = User.objects.get(user_info['user'])
+            user = User.objects.get(pk=user_info['user'])
             user_profile = UserProfileSerializer(get_object_or_404(UserProfile, user=user)).data
             user_info['user_profile'] = user_profile
 
