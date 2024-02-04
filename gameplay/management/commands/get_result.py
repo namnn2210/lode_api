@@ -8,6 +8,7 @@ import requests
 
 
 def format_result_dict(result_dict, prize='all'):
+    print('bbbbbbbbbbbbbbbbbbbbbbbb', result_dict)
     result_list = []
     if prize == 'all':
         list_values = list(result_dict.values())
