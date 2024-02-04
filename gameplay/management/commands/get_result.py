@@ -69,6 +69,7 @@ def loto(result_dict, order_numbers, order_mode):
 
 
 def loxien(result_dict, order_numbers, order_mode):
+    print('lo xien', result_dict)
     result_list = format_result_dict(result_dict)
     number = 2
     if order_mode.code == 'loxien_2so':
