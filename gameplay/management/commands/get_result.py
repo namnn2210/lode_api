@@ -13,7 +13,7 @@ def format_result_dict(result_dict, prize='all'):
     if prize == 'all':
         list_values = list(result_dict.values())
     else:
-        list_values = list(result_dict[prize].values())
+        list_values = result_dict[prize]
     # Remove hyphens from each string in the list
     for value in list_values:
         result_list += [x.strip() for x in value.split('-')]
