@@ -310,6 +310,8 @@ class Command(BaseCommand):
                         print('user {} has won {}'.format(user_profile.phone, order.pay_number * total_number_won))
                         user_profile.save()
                     else:
+                        order.status = True
+                        order.win = False
                         order.total = True
                         order.save()
         else:
