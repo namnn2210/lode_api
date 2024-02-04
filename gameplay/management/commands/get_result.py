@@ -82,6 +82,7 @@ def loxien(result_dict, order_numbers, order_mode):
     both_present = all(item in data_list for item in order_numbers)
     if both_present:
         return True, 1
+    return False, 0
 
 
 def dauduoi(result_dict, order_numbers, order_mode):
@@ -94,6 +95,7 @@ def dauduoi(result_dict, order_numbers, order_mode):
         check_number = str(special[-1]).zfill(2)
     if check_number in order_numbers:
         return True, 1
+    return False, 0
 
 
 def de(result_dict, order_numbers, order_mode):
@@ -131,6 +133,7 @@ def de(result_dict, order_numbers, order_mode):
             return win, total_number_won
         else:
             return win, total_number_won
+    return False, 0
 
 
 def bacang(result_dict, order_numbers, order_mode):
@@ -183,6 +186,7 @@ def bacang(result_dict, order_numbers, order_mode):
             return win, total_number_won
         else:
             return win, total_number_won
+    return False, 0
 
 
 def loda(result_dict, order_numbers, order_mode):
@@ -198,6 +202,7 @@ def loda(result_dict, order_numbers, order_mode):
     both_present = all(item in data_list for item in order_numbers)
     if both_present:
         return True, 1
+    return False, 0
 
 
 def xiuchu(result_dict, order_numbers, order_mode):
@@ -250,6 +255,7 @@ def xiuchu(result_dict, order_numbers, order_mode):
             return win, total_number_won
         else:
             return win, total_number_won
+    return False, 0
 
 
 class Command(BaseCommand):
