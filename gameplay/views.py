@@ -126,7 +126,7 @@ class OrderView(APIView):
                         APIResponse(success=True, data=serialized_data, message="").__dict__())
                 else:
                     records = Order.objects.filter(
-                        user=user).select_related('city', 'mode', 'user')
+                        user=user).order_by('-created_at').select_related('city', 'mode', 'user')
                     serialized_data = OrderSerializer(records, many=True).data
                     for data in serialized_data:
                         data['user_profile'] = UserProfileSerializer(
