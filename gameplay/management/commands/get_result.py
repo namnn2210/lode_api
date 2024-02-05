@@ -87,7 +87,7 @@ def loxien(result_dict, order_numbers, order_mode):
 
 def dauduoi(result_dict, order_numbers, order_mode):
     result_list = format_result_dict(result_dict, prize='special')
-    special = result_list[0]
+    special = result_list
     print('specialllllllll', special)
     check_number = ''
     if order_mode.code == 'dauduoi_dau':
