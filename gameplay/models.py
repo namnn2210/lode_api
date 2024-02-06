@@ -13,7 +13,7 @@ class Order(models.Model):
     numbers = models.JSONField()
     bet_amount = models.IntegerField(default=1000)
     pay_number = models.BigIntegerField(null=False, default=1000)
-    total = models.BigIntegerField(null=False, default=1000)
+    total = models.BigIntegerField(null=False, default=0)
     win = models.BooleanField(default=None, null=True)
     result = models.TextField(null=False, default="")
     note = models.TextField()
