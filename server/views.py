@@ -231,7 +231,7 @@ def get_banking(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def deposit(request):
     body = json.loads(request.body.decode('utf-8'))
     banking = Banking.objects.get(status=True)
