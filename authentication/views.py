@@ -177,12 +177,13 @@ def password_change(request):
                         status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user_profile = UserProfile.objects.get(pk=user_id)
-    except UserProfile.DoesNotExist:
+        user = User.objects.get(pk=user_id)
+        # user_profile = UserProfile.objects.get(user=user)
+    except User.DoesNotExist:
         return Response(APIResponse(success=False, data={}, message="Thông tin người dùng không chính xác").__dict__(),
                         status=status.HTTP_404_NOT_FOUND)
 
-    user = user_profile.user
+    # user = user_profile.user
 
     if not user.check_password(current_password):
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
@@ -214,7 +215,9 @@ class PasswordResetView(APIView):
             if user:
                 # Generate and send the password reset token via email
                 token = default_token_generator.make_token(user)
+                print('======================= TOKEN', token)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
+                print('======================= UID', uid)
                 reset_url = f"https://110lode.com/reset-password/{uid}/{token}/"
 
                 # Send reset URL to the user via email (implement this)
@@ -237,15 +240,19 @@ class PasswordResetConfirmView(APIView):
     def post(self, request, uidb64, token):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
-            user = get_user_model().objects.get(pk=uid)
+            user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
             raise Http404
 
+        print('======================= UID', uid)
+        print('======================= USER', user)
         if default_token_generator.check_token(user, token):
+            print('======================= TOKEN', token)
             # Token is valid, allow the user to reset the password
             # You can implement password reset logic here
             # For simplicity, we'll return a success message in this example
-            new_password = request.POST.get('new_password')
+            new_password = request.data.get('new_password')
+            print(new_password)
             user.set_password(new_password)
             user.save()
 
