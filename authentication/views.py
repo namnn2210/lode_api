@@ -177,12 +177,13 @@ def password_change(request):
                         status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user_profile = UserProfile.objects.get(pk=user_id)
-    except UserProfile.DoesNotExist:
+        user = User.objects.get(pk=user_id)
+        # user_profile = UserProfile.objects.get(user=user)
+    except User.DoesNotExist:
         return Response(APIResponse(success=False, data={}, message="Thông tin người dùng không chính xác").__dict__(),
                         status=status.HTTP_404_NOT_FOUND)
 
-    user = user_profile.user
+    # user = user_profile.user
 
     if not user.check_password(current_password):
         return Response(APIResponse(success=False, data={}, message="Thông tin đăng nhập không chính xác").__dict__(),
