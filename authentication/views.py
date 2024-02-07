@@ -240,7 +240,7 @@ class PasswordResetConfirmView(APIView):
     def post(self, request, uidb64, token):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
-            user = get_user_model().objects.get(pk=uid)
+            user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
             raise Http404
 
@@ -252,6 +252,7 @@ class PasswordResetConfirmView(APIView):
             # You can implement password reset logic here
             # For simplicity, we'll return a success message in this example
             new_password = request.POST.get('new_password')
+            print(new_password)
             user.set_password(new_password)
             user.save()
 
