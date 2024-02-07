@@ -251,7 +251,7 @@ class PasswordResetConfirmView(APIView):
             # Token is valid, allow the user to reset the password
             # You can implement password reset logic here
             # For simplicity, we'll return a success message in this example
-            new_password = request.POST.get('new_password')
+            new_password = request.data.get('new_password')
             print(new_password)
             user.set_password(new_password)
             user.save()
