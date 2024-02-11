@@ -130,6 +130,8 @@ def get_result(request):
             str_date = f'/{query_date}'
         else:
             str_date = ''
+        if city == 'lam-dong':
+            city = 'da-lat'
         current_timestamp = int(time.time())
         url = f'https://www.xoso.net/getkqxs/{city}{str_date}.js_={current_timestamp}'
         html_response = requests.get(url).text.replace('\t', '').replace('nowrap', '')
@@ -162,7 +164,7 @@ def get_result(request):
         giai7_data = extract_data(giai7_regex, html_response)
         giai8_data = extract_data(giai8_regex, html_response)
 
-        if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam' or city == 'khanh-hoa' or city == 'da-nang' or city == 'binh-dinh' or city == 'quang-binh' or city == 'quang-tri' or city == 'ninh-thuan' or city == 'gia-lai':
+        if city == 'mien-bac' or city == 'dak-lak' or city == 'quang-nam' or city == 'khanh-hoa' or city == 'da-nang' or city == 'binh-dinh' or city == 'quang-binh' or city == 'quang-tri' or city == 'ninh-thuan' or city == 'gia-lai' or city == 'kon-tum':
             # formatted_date_data = date_data.replace('/', '-')
             title = f'{title_data} {date_data}'
         else:
@@ -763,6 +765,8 @@ total_withdraw = START_VALUE
 @permission_classes([AllowAny])
 def count_total(request):
     global last_reset_time, total_deposit, total_order_amount, total_withdraw
+
+    print('8888888888888888888', last_reset_time, total_deposit, total_order_amount, total_withdraw)
 
     current_time = now()
 
