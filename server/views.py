@@ -102,7 +102,7 @@ def get_cities(request):
         weekday = today.isoweekday()
         print('day of week', weekday)
     else:
-        date_object = datetime.fromisoformat(query_date)
+        date_object = datetime.strptime(query_date, '%d-%m-%Y')
         weekday = date_object.isoweekday()
     if region:
         print('region', region)
