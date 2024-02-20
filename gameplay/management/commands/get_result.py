@@ -103,7 +103,10 @@ def de(result_dict, order_numbers, order_mode):
     win, total_number_won = False, 0
     if order_mode.code == 'de_dau':
         print('game mode: ', order_mode.code)
-        result_list = format_result_dict(result_dict, prize='prize7')
+        if order_mode.region == 'bac' :
+            result_list = format_result_dict(result_dict, prize='prize7')
+        else:
+            result_list = format_result_dict(result_dict, prize='prize8')
         number = 2
         data_list = [item[-number:] for item in result_list if item and len(item) >= number]
         print('result list to compare', data_list)
@@ -304,16 +307,19 @@ class Command(BaseCommand):
                     if win:
                         order.status = True
                         order.win = True
-                        order.save()
+
 
                         user_profile = UserProfile.objects.get(user=order.user)
                         user_profile.balance += order.bet_amount * order.mode.rate * total_number_won
-                        print('user {} has won {}'.format(user_profile.phone, order.pay_number * total_number_won))
+                        order.total = order.bet_amount * order.mode.rate * total_number_won
+                        print('user {} has won {}'.format(user_profile.phone, order.bet_amount * order.mode.rate * total_number_won))
+
+                        order.save()
                         user_profile.save()
                     else:
                         order.status = True
                         order.win = False
-                        order.total = True
+                        order.total = 0
                         order.save()
         else:
             raise CommandError('Error: the --region parameter is required.')

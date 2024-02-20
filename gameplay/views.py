@@ -33,7 +33,7 @@ class OrderView(APIView):
             return Response(APIResponse(success=False, data={}, message="Tiền cược phải từ 1000 VNĐ").__dict__())
         pay_number = bet_amount * mode.pay_number * len(body['numbers'])
 
-        total = bet_amount * mode.rate * len(body['numbers'])
+        total = 0
 
         # Check du so du trong tai khoan hay khong
         if pay_number > user_profile.balance:
@@ -85,7 +85,7 @@ class OrderView(APIView):
 
             order = Order(user=user, city=city, mode=mode, order_date=order_date_obj.strftime("%Y-%m-%d"),
                           numbers=body['numbers'],
-                          pay_number=pay_number, total=total)
+                          pay_number=pay_number, total=total, bet_amount=body['bet_amount'])
             order_dict = OrderSerializer(order).data
             order.save()
             return Response(APIResponse(success=True, data=order_dict, message="").__dict__())
