@@ -25,7 +25,7 @@ SECRET_KEY = '!@lode@@!!123'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '194.233.87.18', 'https://110lode.com/', '110lode.com', 'www.110lode.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.110.164.61', 'https://110lode.xyz/', '110lode.xyz', 'www.110lode.xyz']
 
 # Application definition
 
@@ -87,10 +87,10 @@ WSGI_APPLICATION = 'lode_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lode_com',
+        'NAME': 'lode_xyz',
         'USER': 'root',
         'PASSWORD': 'ngocnam2210',
-        'HOST': '194.233.87.18',  # Change this if your MySQL server is on a different host
+        'HOST': 'localhost',  # Change this if your MySQL server is on a different host
         'PORT': '3306',
     }
 }
@@ -185,15 +185,15 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://194.233.87.18:8000",
-    "https://110lode.com"
+    "http://192.110.164.61:8000",
+    "https://110lode.xyz"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://194.233.87.18:8000",
-    "https://110lode.com"
+    "http://192.110.164.61:8000",
+    "https://110lode.xyz"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
